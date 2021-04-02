@@ -15,7 +15,7 @@ namespace CDEM {
 
     public:
       enum class MeterStatus {
-        IN_PROGRESS, DATAGRAM_READY, CRC_ERROR
+        IN_PROGRESS, DATAGRAM_READY, CRC_ERROR, TIMED_OUT
       };
 
     public:
@@ -23,6 +23,7 @@ namespace CDEM {
       MeterStatus read_datagram(char * buffer, size_t bufferLength);
 
     private:
+      void reset_read_state(void);
       void clear_buffer(char * buffer, size_t length);
 
     private:
@@ -30,6 +31,8 @@ namespace CDEM {
       int requestPin;
       unsigned int readPointer = 0;
       bool startDetected = false;
+      unsigned long startTimeoutMillis = 0;
+      static const unsigned long TIMEOUT_MS = 1000;
   };
 
 };

@@ -1,6 +1,6 @@
 #include "digital_meter.h"
 #include "crc_checker.h"
-#include <CDEM.h>
+#include "../logging/logger.h"
 
 namespace CDEM {
 
@@ -12,9 +12,9 @@ namespace CDEM {
 
   void DigitalMeter::enable(void) {
     DoLog.verbose("Enabling the digital meter data request", "digital-meter");
+    reset_read_state();
     digitalWrite(requestPin, HIGH);
-    readPointer = 0;
-    startDetected = false;
+    startTimeoutMillis = millis();
   }
 
   void DigitalMeter::disable(void) {
@@ -23,7 +23,12 @@ namespace CDEM {
   }
 
   // Read a new datagram from the P1 port
-  MeterStatus DigitalMeter::read_datagram(char * buffer, size_t bufferLength) {
+  DigitalMeter::MeterStatus DigitalMeter::read_datagram(char * buffer, size_t bufferLength) {
+    if (millis() - startTimeoutMillis > TIMEOUT_MS) {
+      DoLog.verbose("Meter timed out", "digital-meter");
+      return MeterStatus::TIMED_OUT;
+    }
+
     if (serial->available() > 0) {
             
       // Get next byte for the P1 port
@@ -31,10 +36,10 @@ namespace CDEM {
             
       // Look for the start of the datagram
       if (incomingByte == '/') {
-        readPointer = 0;
-        startDetected = true;
         DoLog.verbose("Detected start of a datagram", "digital-meter");
         clear_buffer(buffer, bufferLength);
+        reset_read_state();
+        startDetected = true;
       }
 
       // Ignore all data on serial port if start was not detected
@@ -60,13 +65,18 @@ namespace CDEM {
         } else if (readPointer >= bufferLength) {    // End of datagram not found
           DoLog.warning("Datagram is invalid (could not detect END)", "digital-meter");
           clear_buffer(buffer, bufferLength);
-          readPointer = 0;
-          startDetected = false;
+          reset_read_state();
+          // Keep reading as long as timeout does not occur
         }
       }
     }
 
     return MeterStatus::IN_PROGRESS;
+  }
+
+  void DigitalMeter::reset_read_state(void) {
+    readPointer = 0;
+    startDetected = false;
   }
 
   void DigitalMeter::clear_buffer(char * buffer, size_t length) {

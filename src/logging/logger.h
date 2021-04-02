@@ -4,8 +4,6 @@
 
 namespace CDEM {
 
-  #define DoLog Logger::get_instance()
-
   class Logger final {
 
     public:
@@ -52,4 +50,6 @@ namespace CDEM {
       Stream * destinationStream = nullptr;
       LogLevel logLevel = LogLevel::VERBOSE;
   };
+
+  #define DoLog Logger::get_instance()
 };

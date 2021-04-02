@@ -1,0 +1,17 @@
+{
+  "name": "ConnectedDigitalEnergyMeter",
+  "keywords": "iot, home, energy, utility, meter, automation, mqtt",
+  "description": "A library for connecting a Belgian digital energy meter to your home automation system via MQTT.",
+  "authors": [{
+    "name": "Nico De Witte"
+  },{
+    "name": "Ronny Mees"
+  }],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/connected-digital-energy-meter/connected-digital-energy-meter.git"
+  },
+  "version": "1.0.0",
+  "frameworks": "arduino",
+  "platforms": ["espressif8266"]
+}

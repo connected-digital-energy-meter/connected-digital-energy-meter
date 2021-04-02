@@ -6,17 +6,13 @@ namespace CDEM {
     std::map<String, DataBlock>::iterator it = memoryMap.find(key);
 
     void * memoryBlock = nullptr;
-    if (it != memoryMap.end()) {
-      memoryBlock = realloc(memoryMap[key].memory, length);
-      if (memoryBlock) totalSize -= memoryMap[key].length;
-    }
+    if (it != memoryMap.end()) memoryBlock = realloc(memoryMap[key].memory, length);
     else memoryBlock = malloc(length);
 
     if (!memoryBlock) return false;
 
     memcpy(memoryBlock, data, length);
     memoryMap[key] = DataBlock({ memoryBlock, length });
-    totalSize += length;
 
     return true;
   }
@@ -41,11 +37,17 @@ namespace CDEM {
       (it->second).memory = nullptr;
     }
     memoryMap.clear();
-    totalSize = 0;
   }
 
-  size_t Configuration::size() {
-    return totalSize;
+  size_t Configuration::size(void) {
+    size_t requiredSize = 0;
+    for (std::map<String, DataBlock>::iterator it = memoryMap.begin(); it != memoryMap.end(); it++) {
+      requiredSize += (it->first).length()+1;
+      requiredSize += sizeof(size_t);
+      requiredSize += (it->second).length;
+    }
+
+    return requiredSize;
   }
 
 };

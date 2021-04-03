@@ -20,19 +20,14 @@ namespace CDEM {
 
     public:
       size_t size(void);
-      // size_t serialize(char * buffer, size_t bufferSize);
-      // size_t deserialize(const char * buffer, size configSize);
+      size_t serialize(char * buffer, size_t bufferSize);
+      size_t deserialize(const char * buffer, size_t configSize);
 
     public:
       ~Configuration(void);
 
     private:
       std::map<String, DataBlock> memoryMap;
-
   };
 
 };
-
-
-
-

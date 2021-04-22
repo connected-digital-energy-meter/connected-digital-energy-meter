@@ -51,5 +51,5 @@ namespace CDEM {
       LogLevel logLevel = LogLevel::VERBOSE;
   };
 
-  #define DoLog Logger::get_instance()
+  #define DoLog CDEM::Logger::get_instance()
 };

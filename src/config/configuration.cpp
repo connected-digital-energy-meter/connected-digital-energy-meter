@@ -2,96 +2,119 @@
 
 namespace CDEM {
 
-  bool Configuration::add(String key, const void * data, size_t length) {
-    std::map<String, DataBlock>::iterator it = memoryMap.find(key);
-
-    void * memoryBlock = nullptr;
-    if (it != memoryMap.end()) memoryBlock = realloc(memoryMap[key].memory, length);
-    else memoryBlock = malloc(length);
-
-    if (!memoryBlock) return false;
-
-    memcpy(memoryBlock, data, length);
-    memoryMap[key] = DataBlock({ memoryBlock, length });
-
-    return true;
+  void Configuration::wifi_ssid(String ssid) {
+    datamap.add("wifi_ssid", (void*)(ssid.c_str()), ssid.length()+1);
   }
 
-  void * Configuration::get(String key) {
-    std::map<String, DataBlock>::iterator it = memoryMap.find(key);
-    if (it == memoryMap.end()) return nullptr;
-    return (it->second).memory;
+  String Configuration::wifi_ssid(void) {
+    return String((char*)datamap.get("wifi_ssid"));
   }
 
-  void Configuration::remove(String key) {
-    std::map<String, DataBlock>::iterator it = memoryMap.find(key);
-    if (it == memoryMap.end()) return;
-
-    free((it->second).memory);
-    memoryMap.erase(it);
+  void Configuration::wifi_password(String password) {
+    datamap.add("wifi_pass", (void*)(password.c_str()), password.length()+1);
   }
 
-  Configuration::~Configuration(void) {
-    for (std::map<String, DataBlock>::iterator it = memoryMap.begin(); it != memoryMap.end(); it++) {
-      free((it->second).memory);
-      (it->second).memory = nullptr;
-    }
-    memoryMap.clear();
+  String Configuration::wifi_password(void) {
+    return String((char*)datamap.get("wifi_pass"));
   }
 
-  size_t Configuration::size(void) {
-    size_t requiredSize = 0;
-    for (std::map<String, DataBlock>::iterator it = memoryMap.begin(); it != memoryMap.end(); it++) {
-      requiredSize += (it->first).length()+1;
-      requiredSize += sizeof(size_t);
-      requiredSize += (it->second).length;
-    }
-
-    return requiredSize;
+  void Configuration::mqtt_broker(String broker) {
+    datamap.add("mqtt_broker", (void*)(broker.c_str()), broker.length()+1);
   }
 
-  size_t Configuration::serialize(char * buffer, size_t bufferSize) {
-    if (bufferSize < size()) return -1;
-
-    // Mapping:
-    // KEY\0   DATA_SIZE (4 bytes = sizeof(size_t))   DATA 
-
-    char * pBuffer = buffer;
-    for (std::map<String, DataBlock>::iterator it = memoryMap.begin(); it != memoryMap.end(); it++) {
-
-      // Copy the key
-      strcpy(pBuffer, (it->first).c_str());
-      pBuffer += (it->first).length() + 1;    // +1 for \0
-
-      // Copy data length
-      *((size_t*)pBuffer) = (it->second).length;
-      pBuffer += sizeof(size_t);
-
-      // Copy data
-      memcpy(pBuffer, (it->second).memory, (it->second).length);
-      pBuffer += (it->second).length;
-    }
-
-    return (pBuffer - buffer);
+  String Configuration::mqtt_broker(void) {
+    return String((char*)datamap.get("mqtt_broker"));
   }
 
-  size_t Configuration::deserialize(const char * buffer, size_t configSize) {
-    const char * pBuffer = buffer;
+  void Configuration::mqtt_port(int port) {
+    datamap.add("mqtt_port", (void*)(&port), sizeof(int));
+  }
 
-    while ((pBuffer - buffer) < configSize) {
-      String key = String(pBuffer);   // Should create String from start to \0
-      pBuffer += key.length() + 1;
+  int Configuration::mqtt_port(void) {
+    return *(int*)datamap.get("mqtt_port");
+  }
+  
+  void Configuration::mqtt_topic(String topic) {
+    datamap.add("mqtt_topic", (void*)(topic.c_str()), topic.length()+1);
+  }
 
-      size_t length = *((size_t*)pBuffer);
-      pBuffer += sizeof(size_t);
+  String Configuration::mqtt_topic(void) {
+    return String((char*)datamap.get("mqtt_topic"));
+  }
+  
+  void Configuration::use_dhcp(bool useDhcp) {
+    datamap.add("dhcp", (void*)(&useDhcp), sizeof(useDhcp));
+  }
 
-      const void * dataStart = pBuffer;
-      pBuffer += length;
+  bool Configuration::use_dhcp(void) {
+    return *(bool*)datamap.get("dhcp");
+  }
+    
+  void Configuration::static_ip(String ip) {
+    datamap.add("ip", (void*)(ip.c_str()), ip.length()+1);
+  }
 
-      add(key, dataStart, length);
-    }
+  String Configuration::static_ip(void) {
+    return String((char*)datamap.get("ip"));
+  }
+  
+  void Configuration::subnet_mask(String mask) {
+    datamap.add("mask", (void*)(mask.c_str()), mask.length()+1);
+  }
 
-    return (pBuffer - buffer);
+  String Configuration::subnet_mask(void) {
+    return String((char*)datamap.get("mask"));
+  }
+  
+  void Configuration::default_gateway(String gateway) {
+    datamap.add("gw", (void*)(gateway.c_str()), gateway.length()+1);
+  }
+
+  String Configuration::default_gateway(void) {
+
+    return String((char*)datamap.get("gw"));
+  }
+  
+  void Configuration::read_period(unsigned int period) {
+    datamap.add("period", (void*)(&period), sizeof(unsigned int));
+  }
+
+  unsigned int Configuration::read_period(void) {
+    return *(unsigned int*)datamap.get("period");
+  }
+
+  String Configuration::to_string(void) {
+    String output = "";
+    output += "WiFi SSID:       " + wifi_ssid() + "\n";
+    output += "WiFi Password:   " + wifi_password() + "\n";
+    output += "Use DHCP?:       " + String(use_dhcp() ? "yes" : "no") + "\n";
+    output += "Static IP:       " + static_ip() + "\n";
+    output += "Subnet Mask:     " + subnet_mask() + "\n";
+    output += "Default Gateway: " + default_gateway() + "\n";
+    output += "MQTT Broker:     " + mqtt_broker() + "\n";
+    output += "MQTT Port:       " + String(mqtt_port()) + "\n";
+    output += "MQTT Topic:      " + mqtt_topic() + "\n";
+    output += "Read period:     " + String(read_period()) + " seconds";
+    return output;
+  }
+
+  bool Configuration::operator==(const Configuration& rhs) {
+    return (
+      wifi_ssid() == rhs.wifi_ssid() &&
+      wifi_password() == rhs.wifi_password() &&
+      mqtt_broker() == rhs.mqtt_broker() &&
+      mqtt_port() == rhs.mqtt_port() &&
+      mqtt_topic() == rhs.mqtt_topic() &&
+      use_dhcp() == rhs.use_dhcp() &&
+      static_ip() == rhs.static_ip() &&
+      subnet_mask() == rhs.subnet_mask() &&
+      default_gateway() == rhs.default_gateway() &&
+      read_period() == rhs.read_period()
+    );
+  }
+
+  bool Configuration::operator!=(const Configuration& rhs) {
+    return !(*this == rhs);
   }
 
 };

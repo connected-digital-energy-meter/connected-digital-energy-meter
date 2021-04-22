@@ -8,6 +8,7 @@ namespace CDEM {
     this->requestPin = requestPin;
     this->serial = serial;
     pinMode(requestPin, OUTPUT);
+    disable();
   }
 
   void DigitalMeter::enable(void) {
@@ -30,9 +31,11 @@ namespace CDEM {
     }
 
     if (serial->available() > 0) {
+      Serial.println("Got data incoming");
             
       // Get next byte for the P1 port
       char incomingByte = serial->read();
+      Serial.print(incomingByte);
             
       // Look for the start of the datagram
       if (incomingByte == '/') {

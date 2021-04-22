@@ -1,5 +1,7 @@
 #pragma once
 
+#define METER_BAUDRATE            115200
+
 #if defined(CDEM_PCB_V3)
 
   // TODO
@@ -11,7 +13,6 @@
 
   // Digital meter config
   #define METER_TX_PIN              14
-  #define METER_BAUDRATE            115200
   #define METER_REQUEST_PIN         13
 
 #endif

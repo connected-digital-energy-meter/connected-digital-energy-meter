@@ -7,8 +7,6 @@ namespace CDEM {
 
   SmartDigitalMeter::SmartDigitalMeter(int requestPin, Stream * serial)
     : meter(requestPin, serial) {
-
-    meter.disable();
   }
 
   void SmartDigitalMeter::set_publisher(IPublisher * publisher) {

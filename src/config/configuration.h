@@ -8,6 +8,9 @@ namespace CDEM {
   class Configuration {
 
     public:
+      Configuration();
+
+    public:
       void wifi_ssid(String ssid);
       String wifi_ssid(void);
 
@@ -41,9 +44,9 @@ namespace CDEM {
     public:
       String to_string(void);
 
-    public:
-      bool operator==(const Configuration& rhs);
-      bool operator!=(const Configuration& rhs);
+    // public:
+    //   bool operator==(const Configuration& rhs);
+    //   bool operator!=(const Configuration& rhs);
 
     private:
       SerializableMap datamap;

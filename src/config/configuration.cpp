@@ -1,6 +1,20 @@
 #include "configuration.h"
+#include "factory_defaults.h"
 
 namespace CDEM {
+
+  Configuration::Configuration() {
+    wifi_ssid(WIFI_DEFAULT_SSID);
+    wifi_password(WIFI_DEFAULT_PASSWORD);
+    mqtt_broker(MQTT_DEFAULT_BROKER);
+    mqtt_port(MQTT_DEFAULT_PORT);
+    mqtt_topic(MQTT_DEFAULT_TOPIC);
+    use_dhcp(NETWORK_USE_DHCP);
+    static_ip(NETWORK_DEFAULT_IP);
+    default_gateway(NETWORK_DEFAULT_GATEWAY);
+    subnet_mask(NETWORK_DEFAULT_SUBNET);
+    read_period(METER_DEFAULT_READ_PERIOD);
+  }
 
   void Configuration::wifi_ssid(String ssid) {
     datamap.add("wifi_ssid", (void*)(ssid.c_str()), ssid.length()+1);
@@ -43,7 +57,7 @@ namespace CDEM {
   }
   
   void Configuration::use_dhcp(bool useDhcp) {
-    datamap.add("dhcp", (void*)(&useDhcp), sizeof(useDhcp));
+    datamap.add("dhcp", (void*)(&useDhcp), sizeof(bool));
   }
 
   bool Configuration::use_dhcp(void) {
@@ -98,23 +112,23 @@ namespace CDEM {
     return output;
   }
 
-  bool Configuration::operator==(const Configuration& rhs) {
-    return (
-      wifi_ssid() == rhs.wifi_ssid() &&
-      wifi_password() == rhs.wifi_password() &&
-      mqtt_broker() == rhs.mqtt_broker() &&
-      mqtt_port() == rhs.mqtt_port() &&
-      mqtt_topic() == rhs.mqtt_topic() &&
-      use_dhcp() == rhs.use_dhcp() &&
-      static_ip() == rhs.static_ip() &&
-      subnet_mask() == rhs.subnet_mask() &&
-      default_gateway() == rhs.default_gateway() &&
-      read_period() == rhs.read_period()
-    );
-  }
+  // bool Configuration::operator==(const Configuration& rhs) {
+  //   return (
+  //     wifi_ssid() == rhs.wifi_ssid() &&
+  //     wifi_password() == rhs.wifi_password() &&
+  //     mqtt_broker() == rhs.mqtt_broker() &&
+  //     mqtt_port() == rhs.mqtt_port() &&
+  //     mqtt_topic() == rhs.mqtt_topic() &&
+  //     use_dhcp() == rhs.use_dhcp() &&
+  //     static_ip() == rhs.static_ip() &&
+  //     subnet_mask() == rhs.subnet_mask() &&
+  //     default_gateway() == rhs.default_gateway() &&
+  //     read_period() == rhs.read_period()
+  //   );
+  // }
 
-  bool Configuration::operator!=(const Configuration& rhs) {
-    return !(*this == rhs);
-  }
+  // bool Configuration::operator!=(const Configuration& rhs) {
+  //   return !(*this == rhs);
+  // }
 
 };

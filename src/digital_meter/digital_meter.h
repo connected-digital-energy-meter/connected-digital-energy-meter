@@ -7,7 +7,7 @@ namespace CDEM {
   class DigitalMeter {
 
     public:
-      DigitalMeter(int requestPin, HardwareSerial * serial);
+      DigitalMeter(int requestPin, Stream * serial);
 
     public:
       void enable(void);
@@ -27,7 +27,7 @@ namespace CDEM {
       void clear_buffer(char * buffer, size_t length);
 
     private:
-      HardwareSerial * serial;
+      Stream * serial;
       int requestPin;
       unsigned int readPointer = 0;
       bool startDetected = false;

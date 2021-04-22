@@ -6,4 +6,6 @@
 #include "config/configuration.h"
 #include "config/configuration.h"
 #include "mqtt/i_publisher.h"
-#include "smart_meter.h"
+#include "smart_meter/smart_digital_meter.h"
+#include "hardware/pcb_v4.h"
+#include "helpers/ip_parser.h"

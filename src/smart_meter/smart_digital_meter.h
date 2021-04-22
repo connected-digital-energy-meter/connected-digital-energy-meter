@@ -2,13 +2,15 @@
 
 #include "../mqtt/i_publisher.h"
 #include "../config/configuration.h"
+#include "../digital_meter/datagram.h"
+#include "../digital_meter/digital_meter.h"
 
 namespace CDEM {
 
   class SmartDigitalMeter {
 
     public:
-      SmartDigitalMeter(int requestPin, HardwareSerial * serial, unsigned long baudrate);
+      SmartDigitalMeter(int requestPin, Stream * serial);
 
     public:
       void set_publisher(IPublisher * publisher);
@@ -19,7 +21,7 @@ namespace CDEM {
       void process(void);   // Call this in loop()
 
     private:
-      void publish_datagram(void);
+      bool publish_datagram(void);
 
     private:
       // Define a program state class
@@ -33,8 +35,8 @@ namespace CDEM {
 
     private:
       char datagramBuffer[1024] = {0};
-      CDEM::Datagram datagram;
-      CDEM::DigitalMeter meter;
+      Datagram datagram;
+      DigitalMeter meter;
       IPublisher * publisher = nullptr;
       bool acquireData = false;
 

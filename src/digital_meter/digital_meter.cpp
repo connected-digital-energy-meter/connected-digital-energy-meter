@@ -4,7 +4,7 @@
 
 namespace CDEM {
 
-  DigitalMeter::DigitalMeter(int requestPin, HardwareSerial * serial) {
+  DigitalMeter::DigitalMeter(int requestPin, Stream * serial) {
     this->requestPin = requestPin;
     this->serial = serial;
     pinMode(requestPin, OUTPUT);

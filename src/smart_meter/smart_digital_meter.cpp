@@ -1,12 +1,13 @@
 #include "smart_digital_meter.h"
 #include <ArduinoJson.h>
+#include "../logging/logger.h"
+#include "../digital_meter/decoder.h"
 
 namespace CDEM {
 
-  SmartDigitalMeter::SmartDigitalMeter(int requestPin, HardwareSerial * serial, unsigned long baudrate)
+  SmartDigitalMeter::SmartDigitalMeter(int requestPin, Stream * serial)
     : meter(requestPin, serial) {
 
-    SerialMeter.begin(baudrate);
     meter.disable();
   }
 
@@ -21,7 +22,6 @@ namespace CDEM {
     // Start time for period
     acquireData = true;
     startMillis = millis();
-    lastCommCheck = startMillis;
   }
 
   void SmartDigitalMeter::stop(void) {
@@ -80,7 +80,7 @@ namespace CDEM {
     }
   }
 
-  void SmartDigitalMeter::publish_datagram(void) {
+  bool SmartDigitalMeter::publish_datagram(void) {
     if (publisher) {
       if (!publisher->is_connected()) {
         DoLog.warning("Could not publish. Publisher is not connected", "smart");
@@ -88,19 +88,19 @@ namespace CDEM {
       }
 
       bool schededuleOk = true;
-      std::vector<String> keys = datagram->keys();
+      std::vector<String> keys = datagram.keys();
 
       StaticJsonDocument<1000> json;
       for (String key : keys) {
-        String topic = config->mqtt_topic() + "/" + key;
-        String data = String(datagram->get(key));
+        String topic = deviceConfig->mqtt_topic() + "/" + key;
+        String data = String(datagram.get(key));
         schededuleOk = schededuleOk && publisher->publish(topic, data);
-        json[key] = datagram->get(key);
+        json[key] = datagram.get(key);
       }
 
       String payload = "";
       serializeJson(json, payload);
-      String topic = config->mqtt_topic() + "/payload";
+      String topic = deviceConfig->mqtt_topic() + "/payload";
       schededuleOk = schededuleOk && publisher->publish(topic, payload);
       
       if (schededuleOk) {

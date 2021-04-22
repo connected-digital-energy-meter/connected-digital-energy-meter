@@ -12,7 +12,7 @@ namespace CDEM {
       virtual bool is_connected(void) = 0;
 
     public:
-      virtual void publish(String topic, String message) = 0;
+      virtual bool publish(String topic, String message) = 0;
   };
 
 };

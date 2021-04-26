@@ -10,9 +10,9 @@
 
   // Serial for debugging
   #define SerialDebug               Serial
+  #define SerialMeter               Serial
 
   // Digital meter config
-  #define METER_TX_PIN              14
   #define METER_REQUEST_PIN         13
 
 #endif

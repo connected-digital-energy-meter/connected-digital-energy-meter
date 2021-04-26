@@ -13,6 +13,9 @@ namespace CDEM {
 
     public:
       virtual bool publish(String topic, String message) = 0;
+
+    public:
+      virtual void process(void) = 0;
   };
 
 };

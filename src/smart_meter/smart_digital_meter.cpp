@@ -76,6 +76,8 @@ namespace CDEM {
           break;
       }
     }
+
+    if (publisher) publisher->process();
   }
 
   bool SmartDigitalMeter::publish_datagram(void) {

@@ -1,0 +1,15 @@
+{
+  "name": "info",
+  "version": "1.0.0",
+  "description": "",
+  "main": "html_generator.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "html-minifier": "^4.0.0",
+    "js-string-escape": "^1.0.1"
+  }
+}

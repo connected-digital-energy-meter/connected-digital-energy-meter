@@ -98,7 +98,7 @@ namespace CDEM {
     String ssid = this->webServer.arg("ssid");
     error = ConfigurationValidator::validate_ssid(ssid);
     if (error == "") newConfig.wifi_ssid(ssid);
-    else validationErrors += error;
+    else validationErrors += error + "|";
 
     // String pass = this->webServer.arg("pass");
     // newConfig.wifi_password(pass);

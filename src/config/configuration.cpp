@@ -77,7 +77,7 @@ namespace CDEM {
   }
 
   String Configuration::subnet_mask(void) {
-    return mask;
+    return netmask;
   }
   
   void Configuration::default_gateway(String gateway) {

@@ -2,6 +2,7 @@
 #include <ESP8266WiFi.h>
 #include "pages/index.h"
 #include "../logging/logger.h"
+#include "../config/configuration_validator.h"
 
 namespace CDEM {
 
@@ -39,7 +40,11 @@ namespace CDEM {
 
     // TODO - If no client connects within waitTime then return false
 
-    return true;   // Not done yet      // TODO - Return false if configured
+    return !done;   // Not done yet      // TODO - Return false if configured
+  }
+
+  Configuration CaptivePortal::resulting_configuration(void) {
+    return newConfig;
   }
 
   bool CaptivePortal::setup_access_point(void) {
@@ -67,17 +72,16 @@ namespace CDEM {
     webServer.on("/post",[=]() {
       DoLog.verbose("Got POST from client", "portal");
 
-      String wifiSsid = this->webServer.arg("ssid");
-      String wifiPass = this->webServer.arg("pass");
-      String dhcp = this->webServer.arg("dhcp");
-      Serial.print("wifiSSID = "); Serial.println(wifiSsid);
-      Serial.print("wifiPass = "); Serial.println(wifiPass);
-      Serial.print("dhcp = "); Serial.println(dhcp);
-
-      // TODO - Validate
-      // if (ok) send back rebooting ....
-      // if (not_oke) send back index page with errors and data
-      //this->webServer.send(200, "text/html", IndexPage::post());
+      String errors = parse_config();
+      if (errors == "") {
+        done = true;
+        DoLog.verbose("Configuration is valid", "portal");
+        this->webServer.send(200, "text/html", "Configuration is ok. Booting the system now ...");
+      } 
+      else {
+        DoLog.error(errors, "portal");
+        this->webServer.send(200, "text/html", IndexPage::get(&(this->newConfig), errors));
+      }
     });
 
     webServer.onNotFound([=]() {
@@ -85,6 +89,45 @@ namespace CDEM {
     });
 
     webServer.begin();
+  }
+
+  String CaptivePortal::parse_config(void) {
+    String validationErrors = "";
+    String error = "";
+
+    String ssid = this->webServer.arg("ssid");
+    error = ConfigurationValidator::validate_ssid(ssid);
+    if (error == "") newConfig.wifi_ssid(ssid);
+    else validationErrors += error;
+
+    // String pass = this->webServer.arg("pass");
+    // newConfig.wifi_password(pass);
+
+    // // String dhcp = this->webServer.arg("dhcp");
+    // // newConfig.use_dhcp(pass);
+
+    // String nip = this->webServer.arg("nip");
+    // newConfig.static_ip(nip);
+
+    // String subnet = this->webServer.arg("subnet");
+    // newConfig.subnet_mask(subnet);
+
+    // String gateway = this->webServer.arg("gateway");
+    // newConfig.default_gateway(gateway);
+
+    // String bip = this->webServer.arg("bip");
+    // newConfig.mqtt_broker(bip);
+
+    // // String port = this->webServer.arg("port");
+    // // newConfig.mqtt_port(port);
+
+    // String topic = this->webServer.arg("topic");
+    // newConfig.mqtt_topic(topic);
+
+    // // String period = this->webServer.arg("period");
+    // // newConfig.read_period(period);
+
+    return validationErrors;
   }
 
 };

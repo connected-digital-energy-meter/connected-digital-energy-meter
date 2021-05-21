@@ -17,9 +17,15 @@ namespace CDEM {
     public:
       bool process(void);
 
+    public:
+      Configuration resulting_configuration(void);
+
     private:
       bool setup_access_point(void);
       void setup_web_server(void);
+
+    private:
+      String parse_config(void);
 
     private:
       String ssid = "CDEM-Config";
@@ -31,6 +37,8 @@ namespace CDEM {
 
       Configuration initialConfig;
       Configuration newConfig;
+
+      bool done = false;
   };
 
 };

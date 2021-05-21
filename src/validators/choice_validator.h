@@ -12,7 +12,7 @@ namespace CDEM {
       ChoiceValidator(std::vector<String> choices, bool caseSensitive=false);
 
     public:
-      virtual bool is_valid(String value);
+      virtual bool is_valid(String value, String label="Value");
 
     private:
       std::vector<String> choices;

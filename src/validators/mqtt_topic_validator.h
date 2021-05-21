@@ -7,7 +7,7 @@ namespace CDEM {
   class MqttTopicValidator : public Validator {
 
     public:
-      virtual bool is_valid(String value);
+      virtual bool is_valid(String value, String label="Value");
   };
 
 };

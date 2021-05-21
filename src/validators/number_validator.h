@@ -10,7 +10,7 @@ namespace CDEM {
       NumberValidator(long minimum, long maximum);
 
     public:
-      virtual bool is_valid(String value);
+      virtual bool is_valid(String value, String label="Value");
 
     private:
       long minimum;

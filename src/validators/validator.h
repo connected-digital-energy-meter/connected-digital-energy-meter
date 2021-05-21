@@ -7,7 +7,7 @@ namespace CDEM {
   class Validator {
 
     public:
-      virtual bool is_valid(String value) = 0;
+      virtual bool is_valid(String value, String label="Value") = 0;
 
     public:
       void validation_error(String message);

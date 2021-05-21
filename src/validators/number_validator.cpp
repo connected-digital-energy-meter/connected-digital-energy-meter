@@ -8,19 +8,19 @@ namespace CDEM {
     this->maximum = maximum;
   }
 
-  bool NumberValidator::is_valid(String value) {
+  bool NumberValidator::is_valid(String value, String label) {
     if (!StringHelper::is_number(value)) {
-      this->validation_error("Value is not a valid number");
+      this->validation_error(label + " is not a valid number");
       return false;
     }
 
     long number = value.toInt();
 
     if (number < minimum) {
-      this->validation_error("Value should not be smaller than " + String(minimum));
+      this->validation_error(label + " should not be smaller than " + String(minimum));
       return false;
     } else if (number > maximum) {
-      this->validation_error("Value should not be larger than " + String(maximum));
+      this->validation_error(label + " should not be larger than " + String(maximum));
       return false;
     }
 

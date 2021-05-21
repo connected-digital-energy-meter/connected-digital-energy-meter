@@ -7,7 +7,7 @@ namespace CDEM {
   class IpValidator : public Validator {
 
     public:
-      virtual bool is_valid(String value);
+      virtual bool is_valid(String value, String label="Value");
   };
 
 };

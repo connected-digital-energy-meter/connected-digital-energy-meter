@@ -1,29 +1,24 @@
-// #include "string_validator.h"
+#include "string_validator.h"
 
-// namespace CDEM {
+namespace CDEM {
 
-//   StringValidator::StringValidator(bool allowEmpty, unsigned int maxLength) {
-//     this->allowEmpty = allowEmpty;
-//     this->maxLength = maxLength;
-//   }
+  StringValidator::StringValidator(bool allowEmpty, unsigned int maxLength) {
+    this->allowEmpty = allowEmpty;
+    this->maxLength = maxLength;
+  }
 
-//   bool StringValidator::is_valid(String value) {
-//     if (!allowEmpty && value == "") {
-//       this->validation_error("Value should not be empty.");
-//       return false;
-//     }
+  bool StringValidator::is_valid(String value, String label) {
+    if (!allowEmpty && value == "") {
+      this->validation_error(label + " should not be empty.");
+      return false;
+    }
 
+    if (value.length() > maxLength) {
+      this->validation_error(label + " should not be longer than " + String(maxLength) + " characters.");
+      return false;
+    }
 
+    return true;
+  }
 
-//     if (number < minimum) {
-//       this->validation_error("Value should not be smaller than " + String(minimum));
-//       return false;
-//     } else if (number > maximum) {
-//       this->validation_error("Value should not be larger than " + String(maximum));
-//       return false;
-//     }
-
-//     return true;
-//   }
-
-// };
+};

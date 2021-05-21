@@ -13,7 +13,7 @@ namespace CDEM {
     }
   }
 
-  bool ChoiceValidator::is_valid(String value) {
+  bool ChoiceValidator::is_valid(String value, String label) {
     if (!caseSensitive) {
       value.toLowerCase();
     }

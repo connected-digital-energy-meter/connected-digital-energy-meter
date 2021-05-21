@@ -1,20 +1,20 @@
-// #pragma once
+#pragma once
 
-// #include "validator.h"
+#include "validator.h"
 
-// namespace CDEM {
+namespace CDEM {
 
-//   class StringValidator : public Validator {
+  class StringValidator : public Validator {
 
-//     public:
-//       StringValidator(bool allowEmpty, unsigned int maxLength);
+    public:
+      StringValidator(bool allowEmpty, unsigned int maxLength);
 
-//     public:
-//       virtual bool is_valid(String value);
+    public:
+      virtual bool is_valid(String value, String label="Value");
 
-//     private:
-//       bool allowEmpty;
-//       unsigned int maxLength;
-//   };
+    private:
+      bool allowEmpty;
+      unsigned int maxLength;
+  };
 
-// };
+};

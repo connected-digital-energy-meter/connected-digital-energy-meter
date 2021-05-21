@@ -9,7 +9,7 @@ namespace CDEM {
     std::vector<String> parts = StringHelper::split(value, '.');
 
     if (parts.size() != 4) {
-      this->validation_error(label + " does not contain 4 dots");
+      this->validation_error(label + " does not contain 4 octets");
       return false;
     }
 

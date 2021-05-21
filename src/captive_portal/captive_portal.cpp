@@ -30,17 +30,22 @@ namespace CDEM {
   }
 
   bool CaptivePortal::process(void) {
-    webServer.handleClient();
+    static unsigned int stationsConnected = 0;
 
-    static unsigned long last = millis();
-    if (millis() - last > 1000) {
-      last = millis();
-      Serial.println("Stations connected = " + String(WiFi.softAPgetStationNum()));
+    unsigned int newConnected = WiFi.softAPgetStationNum();
+    if (stationsConnected < newConnected) {
+      DoLog.info("Client connected to AP ...");
+      stationsConnected = newConnected;
+    } else if (stationsConnected > newConnected) {
+      DoLog.info("Client disconnected from AP ...");
+      stationsConnected = newConnected;
     }
+
+    webServer.handleClient();
 
     // TODO - If no client connects within waitTime then return false
 
-    return !done;   // Not done yet      // TODO - Return false if configured
+    return done;
   }
 
   Configuration CaptivePortal::resulting_configuration(void) {
@@ -69,7 +74,7 @@ namespace CDEM {
 
       if (this->webServer.method() == HTTP_GET) {
         DoLog.verbose("Got GET from client", "portal");
-        this->webServer.send(200, "text/html", IndexPage::get(&(this->newConfig)));
+        this->webServer.send(200, "text/html", IndexPage::render(&(this->newConfig)));
       } else if (this->webServer.method() == HTTP_POST) {
         DoLog.verbose("Got POST from client", "portal");
 
@@ -81,7 +86,7 @@ namespace CDEM {
         } 
         else {
           DoLog.error(errors, "portal");
-          this->webServer.send(200, "text/html", IndexPage::get(&(this->newConfig), errors));
+          this->webServer.send(200, "text/html", IndexPage::render(&(this->newConfig), errors));
         }
       }
     });
@@ -102,32 +107,52 @@ namespace CDEM {
     if (error == "") newConfig.wifi_ssid(ssid);
     else validationErrors += error + "|";
 
-    // String pass = this->webServer.arg("pass");
-    // newConfig.wifi_password(pass);
+    String password = this->webServer.arg("pass");
+    error = ConfigurationValidator::validate_password(password);
+    if (error == "") newConfig.wifi_password(password);
+    else validationErrors += error + "|";
 
-    // // String dhcp = this->webServer.arg("dhcp");
-    // // newConfig.use_dhcp(pass);
+    String dhcp = this->webServer.arg("dhcp");
+    error = ConfigurationValidator::validate_dhcp(dhcp);
+    if (error == "") newConfig.use_dhcp((dhcp == "1"));
+    else validationErrors += error + "|";
 
-    // String nip = this->webServer.arg("nip");
-    // newConfig.static_ip(nip);
+    if (dhcp == "0") {
+      String nip = this->webServer.arg("nip");
+      error = ConfigurationValidator::validate_static_ip(nip);
+      if (error == "") newConfig.static_ip(nip);
+      else validationErrors += error + "|";
 
-    // String subnet = this->webServer.arg("subnet");
-    // newConfig.subnet_mask(subnet);
+      String subnet = this->webServer.arg("subnet");
+      error = ConfigurationValidator::validate_subnet_mask(subnet);
+      if (error == "") newConfig.subnet_mask(subnet);
+      else validationErrors += error + "|";
 
-    // String gateway = this->webServer.arg("gateway");
-    // newConfig.default_gateway(gateway);
+      String gateway = this->webServer.arg("gateway");
+      error = ConfigurationValidator::validate_gateway_ip(gateway);
+      if (error == "") newConfig.default_gateway(gateway);
+      else validationErrors += error + "|";
+    }
 
-    // String bip = this->webServer.arg("bip");
-    // newConfig.mqtt_broker(bip);
+    String bip = this->webServer.arg("bip");
+    error = ConfigurationValidator::validate_broker_ip(bip);
+    if (error == "") newConfig.mqtt_broker(bip);
+    else validationErrors += error + "|";
 
-    // // String port = this->webServer.arg("port");
-    // // newConfig.mqtt_port(port);
+    String port = this->webServer.arg("port");
+    error = ConfigurationValidator::validate_broker_port(port);
+    if (error == "") newConfig.mqtt_port(port.toInt());
+    else validationErrors += error + "|";
 
-    // String topic = this->webServer.arg("topic");
-    // newConfig.mqtt_topic(topic);
+    String topic = this->webServer.arg("topic");
+    error = ConfigurationValidator::validate_mqtt_topic(topic);
+    if (error == "") newConfig.mqtt_topic(topic);
+    else validationErrors += error + "|";
 
-    // // String period = this->webServer.arg("period");
-    // // newConfig.read_period(period);
+    String period = this->webServer.arg("period");
+    error = ConfigurationValidator::validate_read_period(period);
+    if (error == "") newConfig.read_period(period.toInt());
+    else validationErrors += error + "|";
 
     return validationErrors;
   }

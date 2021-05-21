@@ -65,22 +65,24 @@ namespace CDEM {
 
   void CaptivePortal::setup_web_server(void) {
     webServer.on("/", [=]() {
-      DoLog.verbose("Getting request for index page", "portal");
-      this->webServer.send(200, "text/html", IndexPage::get(&(this->newConfig)));
-    });
+      DoLog.info("Getting request for index page", "portal");
 
-    webServer.on("/post",[=]() {
-      DoLog.verbose("Got POST from client", "portal");
+      if (this->webServer.method() == HTTP_GET) {
+        DoLog.verbose("Got GET from client", "portal");
+        this->webServer.send(200, "text/html", IndexPage::get(&(this->newConfig)));
+      } else if (this->webServer.method() == HTTP_POST) {
+        DoLog.verbose("Got POST from client", "portal");
 
-      String errors = parse_config();
-      if (errors == "") {
-        done = true;
-        DoLog.verbose("Configuration is valid", "portal");
-        this->webServer.send(200, "text/html", "Configuration is ok. Booting the system now ...");
-      } 
-      else {
-        DoLog.error(errors, "portal");
-        this->webServer.send(200, "text/html", IndexPage::get(&(this->newConfig), errors));
+        String errors = parse_config();
+        if (errors == "") {
+          done = true;
+          DoLog.verbose("Configuration is valid", "portal");
+          this->webServer.send(200, "text/html", "Configuration is valid. Booting the system now ...");
+        } 
+        else {
+          DoLog.error(errors, "portal");
+          this->webServer.send(200, "text/html", IndexPage::get(&(this->newConfig), errors));
+        }
       }
     });
 

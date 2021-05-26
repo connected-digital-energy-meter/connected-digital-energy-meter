@@ -164,7 +164,7 @@
     </ul>
   </div>
   <div>
-    <form action="/" method="post">
+    <form id="frm" action="/" method="post">
       <label>WiFi SSID:</label>
       <input type="text" name="ssid" value="__SSID__" required maxlength="100"></input>
       <label>WiFi password:</label>
@@ -193,7 +193,8 @@
       <label>Read Period (seconds):</label>
       <input type="number" name="period" required min="1" max="3600" value="__READ_PERIOD__"></input>
       <input type="submit" style="margin-top: 20px" value="Save">
-      <input type="button" style="margin-top: 20px" value="Reset" onclick="location.replace('/')">
+      <input type="button" style="margin-top: 20px" value="Clear" onclick="location.replace('/')">
+      <input type="button" style="margin-top: 20px" value="Cancel" onclick="location.replace('/cancel')">
     </form>
   </div>
 </body>

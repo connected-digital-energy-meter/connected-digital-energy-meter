@@ -100,6 +100,12 @@ namespace CDEM {
       }
     });
 
+    webServer.on("/cancel", [=]() {
+      DoLog.info("Getting cancel request", "portal");
+      done = true;
+      this->webServer.send(200, "text/html", "Booting the system now ...");
+    });
+
     webServer.onNotFound([=]() {
       this->webServer.send(200, "text/html", "Page not Found");
     });

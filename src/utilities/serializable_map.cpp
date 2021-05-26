@@ -2,6 +2,26 @@
 
 namespace CDEM {
 
+  SerializableMap::SerializableMap(void) { }
+
+  // Copy constructor
+  SerializableMap::SerializableMap(const SerializableMap &original) {
+    for (std::map<String, DataBlock>::const_iterator it = original.memoryMap.begin(); it != original.memoryMap.end(); it++) {
+      this->add(it->first, (it->second).memory, (it->second).length);
+    }
+  }
+
+  // Assignment operator
+  SerializableMap& SerializableMap::operator=(const SerializableMap &right) {
+    if (this != &right) {     // protect against invalid self-assignment
+      this->clear();    // Remove all previous items
+      for (std::map<String, DataBlock>::const_iterator it = right.memoryMap.begin(); it != right.memoryMap.end(); it++) {
+        this->add(it->first, (it->second).memory, (it->second).length);
+      }
+    }
+    return *this;
+  }
+
   bool SerializableMap::add(String key, const void * data, size_t length) {
     std::map<String, DataBlock>::iterator it = memoryMap.find(key);
 
@@ -31,12 +51,16 @@ namespace CDEM {
     memoryMap.erase(it);
   }
 
-  SerializableMap::~SerializableMap(void) {
+  void SerializableMap::clear(void) {
     for (std::map<String, DataBlock>::iterator it = memoryMap.begin(); it != memoryMap.end(); it++) {
       free((it->second).memory);
       (it->second).memory = nullptr;
     }
     memoryMap.clear();
+  }
+
+  SerializableMap::~SerializableMap(void) {
+    clear();
   }
 
   size_t SerializableMap::size(void) {

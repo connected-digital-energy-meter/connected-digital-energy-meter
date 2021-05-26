@@ -97,7 +97,7 @@ namespace CDEM {
       if (this->webServer.method() == HTTP_GET) {
         idle = false;
         DoLog.verbose("Got GET from client", "portal");
-        this->webServer.send(200, "text/html", IndexPage::render(&(this->newConfig)));
+        this->webServer.send(200, "text/html", IndexPage::render(&(this->initialConfig)));
       } else if (this->webServer.method() == HTTP_POST) {
         DoLog.verbose("Got POST from client", "portal");
 

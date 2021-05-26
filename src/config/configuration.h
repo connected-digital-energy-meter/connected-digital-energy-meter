@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-// #include "../utilities/serializable_map.h"
+#include "../utilities/serializable_map.h"
 
 namespace CDEM {
 
@@ -44,18 +44,12 @@ namespace CDEM {
     public:
       String to_string(void);
 
-    private:
-      String ssid;
-      String password;
-      String broker;
-      int port;
-      String topic;
-      bool useDhcp;
-      String ip;
-      String gw;
-      String netmask;
-      unsigned int readPeriod;
+    // public:
+    //   bool operator==(const Configuration& rhs);
+    //   bool operator!=(const Configuration& rhs);
 
+    private:
+      SerializableMap datamap;
   };
 
 };

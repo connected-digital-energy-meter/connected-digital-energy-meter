@@ -17,83 +17,84 @@ namespace CDEM {
   }
 
   void Configuration::wifi_ssid(String ssid) {
-    this->ssid = ssid;
+    datamap.add("wifi_ssid", (void*)(ssid.c_str()), ssid.length()+1);
   }
 
   String Configuration::wifi_ssid(void) {
-    return ssid;
+    return String((char*)datamap.get("wifi_ssid"));
   }
 
   void Configuration::wifi_password(String password) {
-    this->password = password;
+    datamap.add("wifi_pass", (void*)(password.c_str()), password.length()+1);
   }
 
   String Configuration::wifi_password(void) {
-    return password;
+    return String((char*)datamap.get("wifi_pass"));
   }
 
   void Configuration::mqtt_broker(String broker) {
-    this->broker = broker;
+    datamap.add("mqtt_broker", (void*)(broker.c_str()), broker.length()+1);
   }
 
   String Configuration::mqtt_broker(void) {
-    return broker;
+    return String((char*)datamap.get("mqtt_broker"));
   }
 
   void Configuration::mqtt_port(int port) {
-    this->port = port;
+    datamap.add("mqtt_port", (void*)(&port), sizeof(int));
   }
 
   int Configuration::mqtt_port(void) {
-    return port;
+    return *(int*)datamap.get("mqtt_port");
   }
   
   void Configuration::mqtt_topic(String topic) {
-    this->topic = topic;
+    datamap.add("mqtt_topic", (void*)(topic.c_str()), topic.length()+1);
   }
 
   String Configuration::mqtt_topic(void) {
-    return topic;
+    return String((char*)datamap.get("mqtt_topic"));
   }
   
   void Configuration::use_dhcp(bool useDhcp) {
-    this->useDhcp = useDhcp;
+    datamap.add("dhcp", (void*)(&useDhcp), sizeof(bool));
   }
 
   bool Configuration::use_dhcp(void) {
-    return useDhcp;
+    return *(bool*)datamap.get("dhcp");
   }
     
   void Configuration::static_ip(String ip) {
-    this->ip = ip;
+    datamap.add("ip", (void*)(ip.c_str()), ip.length()+1);
   }
 
   String Configuration::static_ip(void) {
-    return ip;
+    return String((char*)datamap.get("ip"));
   }
   
   void Configuration::subnet_mask(String mask) {
-    this->netmask = mask;
+    datamap.add("mask", (void*)(mask.c_str()), mask.length()+1);
   }
 
   String Configuration::subnet_mask(void) {
-    return netmask;
+    return String((char*)datamap.get("mask"));
   }
   
   void Configuration::default_gateway(String gateway) {
-    gw = gateway;
+    datamap.add("gw", (void*)(gateway.c_str()), gateway.length()+1);
   }
 
   String Configuration::default_gateway(void) {
-    return gw;
+
+    return String((char*)datamap.get("gw"));
   }
   
   void Configuration::read_period(unsigned int period) {
-    readPeriod = period;
+    datamap.add("period", (void*)(&period), sizeof(unsigned int));
   }
 
   unsigned int Configuration::read_period(void) {
-    return readPeriod;
+    return *(unsigned int*)datamap.get("period");
   }
 
   String Configuration::to_string(void) {

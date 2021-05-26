@@ -14,9 +14,17 @@ namespace CDEM {
       };
 
     public:
+      SerializableMap(void);
+      SerializableMap(const SerializableMap &original);   // Copy constructor
+    
+    public:
+      SerializableMap& operator=(const SerializableMap &t);   // Assignment operator
+
+    public:
       bool add(String key, const void * data, size_t length);
       void * get(String key);
       void remove(String key);
+      void clear(void);
 
     public:
       size_t size(void);

@@ -6,7 +6,6 @@
 
 // TODO - Decent 404
 // TODO - Decent boot page
-// TODO - Allow user to continue boot without config
 
 namespace CDEM {
 
@@ -18,6 +17,8 @@ namespace CDEM {
   }
 
   CaptivePortal::~CaptivePortal(void) {
+    DoLog.verbose("Stopping webserver", "portal");
+    webServer.stop();
     DoLog.verbose("Disconnecting the WiFi AP", "portal");
     WiFi.softAPdisconnect(true);
   }
@@ -41,6 +42,7 @@ namespace CDEM {
 
   bool CaptivePortal::process(void) {
     static unsigned int stationsConnected = 0;
+    static unsigned int cleanupCounter = 5;
 
     unsigned int newConnected = WiFi.softAPgetStationNum();
     if (stationsConnected < newConnected) {
@@ -56,6 +58,13 @@ namespace CDEM {
     if (!done && idle && (millis() > startTime + waitTime)) {
       DoLog.info("No client requests within portal time window", "portal");
       done = true;
+    }
+
+    // Allow webserver to send last reply
+    if (done && cleanupCounter > 0) {
+      cleanupCounter--;
+      delay(20);
+      return false;
     }
 
     return done;
@@ -94,9 +103,9 @@ namespace CDEM {
 
         String errors = parse_config();
         if (errors == "") {
-          done = true;
           DoLog.verbose("Configuration is valid", "portal");
           this->webServer.send(200, "text/html", "Configuration is valid. Booting the system now ...");
+          done = true;
         } 
         else {
           DoLog.error(errors, "portal");
@@ -107,8 +116,8 @@ namespace CDEM {
 
     webServer.on("/cancel", [=]() {
       DoLog.info("Getting cancel request", "portal");
-      done = true;
       this->webServer.send(200, "text/html", "Booting the system now ...");
+      done = true;
     });
 
     webServer.onNotFound([=]() {

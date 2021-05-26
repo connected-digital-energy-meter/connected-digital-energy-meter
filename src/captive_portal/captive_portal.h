@@ -21,6 +21,9 @@ namespace CDEM {
       bool process(void);
 
     public:
+      void finish(void);
+
+    public:
       Configuration resulting_configuration(void);
 
     private:

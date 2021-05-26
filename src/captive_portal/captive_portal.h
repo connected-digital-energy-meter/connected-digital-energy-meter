@@ -9,7 +9,7 @@ namespace CDEM {
   class CaptivePortal {
 
     public:
-      CaptivePortal(String ssid, String password="", unsigned int waitTime=60);
+      CaptivePortal(String ssid, String password="", unsigned int timeWindowSeconds=60);
 
     public:
       bool start(Configuration initialConfig);
@@ -30,15 +30,17 @@ namespace CDEM {
     private:
       String ssid = "CDEM-Config";
       String password = "";
+
       unsigned int waitTime = 60;
+      unsigned long startTime = 0;
+      bool idle = true;           // Got no GET request from user yet
+      bool done = false;
 
       static const unsigned int WEBSERVER_PORT = 80;
       ESP8266WebServer webServer;
 
       Configuration initialConfig;
       Configuration newConfig;
-
-      bool done = false;
   };
 
 };

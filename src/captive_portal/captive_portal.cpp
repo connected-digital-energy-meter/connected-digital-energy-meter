@@ -4,13 +4,17 @@
 #include "../logging/logger.h"
 #include "../config/configuration_validator.h"
 
+// TODO - Decent 404
+// TODO - Decent boot page
+// TODO - Allow user to continue boot without config
+
 namespace CDEM {
 
-  CaptivePortal::CaptivePortal(String ssid, String password, unsigned int waitTime)
+  CaptivePortal::CaptivePortal(String ssid, String password, unsigned int timeWindowSeconds)
     : webServer(WEBSERVER_PORT) {
     this->ssid = ssid;
     this->password = password;
-    this->waitTime = waitTime;
+    this->waitTime = 1000*timeWindowSeconds;
   }
 
   bool CaptivePortal::start(Configuration initialConfig) {
@@ -18,6 +22,7 @@ namespace CDEM {
     this->initialConfig = initialConfig;
 
     DoLog.verbose("Starting captive portal with initial config", "portal");
+    startTime = millis();
 
     if (setup_access_point()) {
       DoLog.info("Soft-AP IP address = " + WiFi.softAPIP().toString(), "portal");
@@ -34,16 +39,19 @@ namespace CDEM {
 
     unsigned int newConnected = WiFi.softAPgetStationNum();
     if (stationsConnected < newConnected) {
-      DoLog.info("Client connected to AP ...");
+      DoLog.info("Client connected to AP ...", "portal");
       stationsConnected = newConnected;
     } else if (stationsConnected > newConnected) {
-      DoLog.info("Client disconnected from AP ...");
+      DoLog.info("Client disconnected from AP ...", "portal");
       stationsConnected = newConnected;
     }
 
     webServer.handleClient();
 
-    // TODO - If no client connects within waitTime then return false
+    if (!done && idle && (millis() > startTime + waitTime)) {
+      DoLog.info("No client requests within portal time window", "portal");
+      done = true;
+    }
 
     return done;
   }
@@ -73,6 +81,7 @@ namespace CDEM {
       DoLog.info("Getting request for index page", "portal");
 
       if (this->webServer.method() == HTTP_GET) {
+        idle = false;
         DoLog.verbose("Got GET from client", "portal");
         this->webServer.send(200, "text/html", IndexPage::render(&(this->newConfig)));
       } else if (this->webServer.method() == HTTP_POST) {

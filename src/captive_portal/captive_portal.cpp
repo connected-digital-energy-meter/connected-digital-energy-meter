@@ -17,6 +17,11 @@ namespace CDEM {
     this->waitTime = 1000*timeWindowSeconds;
   }
 
+  CaptivePortal::~CaptivePortal(void) {
+    DoLog.verbose("Disconnecting the WiFi AP", "portal");
+    WiFi.softAPdisconnect(true);
+  }
+
   bool CaptivePortal::start(Configuration initialConfig) {
     this->newConfig = initialConfig;
     this->initialConfig = initialConfig;

@@ -12,6 +12,9 @@ namespace CDEM {
       CaptivePortal(String ssid, String password="", unsigned int timeWindowSeconds=60);
 
     public:
+      ~CaptivePortal(void);
+
+    public:
       bool start(Configuration initialConfig);
 
     public:

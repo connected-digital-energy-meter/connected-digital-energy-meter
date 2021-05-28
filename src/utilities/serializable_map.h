@@ -22,13 +22,13 @@ namespace CDEM {
 
     public:
       bool add(String key, const void * data, size_t length);
-      void * get(String key);
+      void * get(String key) const;
       void remove(String key);
       void clear(void);
 
     public:
-      size_t size(void);
-      size_t serialize(char * buffer, size_t bufferSize);
+      size_t size(void) const;
+      size_t serialize(char * buffer, size_t bufferSize) const;
       size_t deserialize(const char * buffer, size_t configSize);
 
     public:

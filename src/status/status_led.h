@@ -13,7 +13,7 @@ namespace CDEM {
       ~StatusLed(void);
 
     public:
-      void start(unsigned int onTime, unsigned int offTime);
+      void start(unsigned int onTime, unsigned int offTime, unsigned int delayTime=0);
       void stop(void);
 
     private:

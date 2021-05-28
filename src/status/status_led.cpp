@@ -14,10 +14,10 @@ namespace CDEM {
     stop();
   }
 
-  void StatusLed::start(unsigned int onTime, unsigned int offTime) {
+  void StatusLed::start(unsigned int onTime, unsigned int offTime, unsigned int delayTime) {
     _onTime = onTime;
     _offTime = offTime;
-    scheduled_on();
+    _ticker.once_ms(delayTime, std::bind(&StatusLed::scheduled_on, this));
   }
 
   void StatusLed::stop(void) {
@@ -27,12 +27,12 @@ namespace CDEM {
 
   void StatusLed::scheduled_on(void) {
     led_on();
-    _ticker.once_ms_scheduled(_onTime, std::bind(&StatusLed::scheduled_off, this));
+    _ticker.once_ms(_onTime, std::bind(&StatusLed::scheduled_off, this));
   }
 
   void StatusLed::scheduled_off(void) {
     led_off();
-    _ticker.once_ms_scheduled(_offTime, std::bind(&StatusLed::scheduled_on, this));
+    _ticker.once_ms(_offTime, std::bind(&StatusLed::scheduled_on, this));
   }
 
   void StatusLed::led_on(void) {

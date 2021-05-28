@@ -8,45 +8,45 @@ namespace CDEM {
   class Configuration {
 
     public:
-      Configuration();
+      Configuration(void);
 
     public:
       void wifi_ssid(String ssid);
-      String wifi_ssid(void);
+      String wifi_ssid(void) const;
 
       void wifi_password(String password);
-      String wifi_password(void);
+      String wifi_password(void) const;
 
       void mqtt_broker(String broker);
-      String mqtt_broker(void);
+      String mqtt_broker(void) const;
 
       void mqtt_port(int port);
-      int mqtt_port(void);
+      int mqtt_port(void) const;
       
       void mqtt_topic(String topic);
-      String mqtt_topic(void);
+      String mqtt_topic(void) const;
       
       void use_dhcp(bool useDhcp);
-      bool use_dhcp(void);
+      bool use_dhcp(void) const;
       
       void static_ip(String ip);
-      String static_ip(void);
+      String static_ip(void) const;
       
       void subnet_mask(String mask);
-      String subnet_mask(void);
+      String subnet_mask(void) const;
       
       void default_gateway(String gateway);
-      String default_gateway(void);
+      String default_gateway(void) const;
       
       void read_period(unsigned int period);
-      unsigned int read_period(void);
+      unsigned int read_period(void) const;
       
     public:
-      String to_string(void);
+      String to_string(void) const;
 
-    // public:
-    //   bool operator==(const Configuration& rhs);
-    //   bool operator!=(const Configuration& rhs);
+    public:
+      bool operator==(const Configuration& rhs) const;
+      bool operator!=(const Configuration& rhs) const;
 
     private:
       SerializableMap datamap;

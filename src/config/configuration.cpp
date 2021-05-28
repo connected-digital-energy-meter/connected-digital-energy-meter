@@ -3,7 +3,7 @@
 
 namespace CDEM {
 
-  Configuration::Configuration() {
+  Configuration::Configuration(void) {
     wifi_ssid(WIFI_DEFAULT_SSID);
     wifi_password(WIFI_DEFAULT_PASSWORD);
     mqtt_broker(MQTT_DEFAULT_BROKER);
@@ -20,7 +20,7 @@ namespace CDEM {
     datamap.add("wifi_ssid", (void*)(ssid.c_str()), ssid.length()+1);
   }
 
-  String Configuration::wifi_ssid(void) {
+  String Configuration::wifi_ssid(void) const {
     return String((char*)datamap.get("wifi_ssid"));
   }
 
@@ -28,7 +28,7 @@ namespace CDEM {
     datamap.add("wifi_pass", (void*)(password.c_str()), password.length()+1);
   }
 
-  String Configuration::wifi_password(void) {
+  String Configuration::wifi_password(void) const {
     return String((char*)datamap.get("wifi_pass"));
   }
 
@@ -36,7 +36,7 @@ namespace CDEM {
     datamap.add("mqtt_broker", (void*)(broker.c_str()), broker.length()+1);
   }
 
-  String Configuration::mqtt_broker(void) {
+  String Configuration::mqtt_broker(void) const {
     return String((char*)datamap.get("mqtt_broker"));
   }
 
@@ -44,7 +44,7 @@ namespace CDEM {
     datamap.add("mqtt_port", (void*)(&port), sizeof(int));
   }
 
-  int Configuration::mqtt_port(void) {
+  int Configuration::mqtt_port(void) const {
     return *(int*)datamap.get("mqtt_port");
   }
   
@@ -52,7 +52,7 @@ namespace CDEM {
     datamap.add("mqtt_topic", (void*)(topic.c_str()), topic.length()+1);
   }
 
-  String Configuration::mqtt_topic(void) {
+  String Configuration::mqtt_topic(void) const {
     return String((char*)datamap.get("mqtt_topic"));
   }
   
@@ -60,7 +60,7 @@ namespace CDEM {
     datamap.add("dhcp", (void*)(&useDhcp), sizeof(bool));
   }
 
-  bool Configuration::use_dhcp(void) {
+  bool Configuration::use_dhcp(void) const {
     return *(bool*)datamap.get("dhcp");
   }
     
@@ -68,7 +68,7 @@ namespace CDEM {
     datamap.add("ip", (void*)(ip.c_str()), ip.length()+1);
   }
 
-  String Configuration::static_ip(void) {
+  String Configuration::static_ip(void) const {
     return String((char*)datamap.get("ip"));
   }
   
@@ -76,7 +76,7 @@ namespace CDEM {
     datamap.add("mask", (void*)(mask.c_str()), mask.length()+1);
   }
 
-  String Configuration::subnet_mask(void) {
+  String Configuration::subnet_mask(void) const {
     return String((char*)datamap.get("mask"));
   }
   
@@ -84,7 +84,7 @@ namespace CDEM {
     datamap.add("gw", (void*)(gateway.c_str()), gateway.length()+1);
   }
 
-  String Configuration::default_gateway(void) {
+  String Configuration::default_gateway(void) const {
 
     return String((char*)datamap.get("gw"));
   }
@@ -93,11 +93,11 @@ namespace CDEM {
     datamap.add("period", (void*)(&period), sizeof(unsigned int));
   }
 
-  unsigned int Configuration::read_period(void) {
+  unsigned int Configuration::read_period(void) const {
     return *(unsigned int*)datamap.get("period");
   }
 
-  String Configuration::to_string(void) {
+  String Configuration::to_string(void) const {
     String output = "";
     output += "WiFi SSID:       " + wifi_ssid() + "\n";
     output += "WiFi Password:   " + wifi_password() + "\n";
@@ -112,23 +112,23 @@ namespace CDEM {
     return output;
   }
 
-  // bool Configuration::operator==(const Configuration& rhs) {
-  //   return (
-  //     wifi_ssid() == rhs.wifi_ssid() &&
-  //     wifi_password() == rhs.wifi_password() &&
-  //     mqtt_broker() == rhs.mqtt_broker() &&
-  //     mqtt_port() == rhs.mqtt_port() &&
-  //     mqtt_topic() == rhs.mqtt_topic() &&
-  //     use_dhcp() == rhs.use_dhcp() &&
-  //     static_ip() == rhs.static_ip() &&
-  //     subnet_mask() == rhs.subnet_mask() &&
-  //     default_gateway() == rhs.default_gateway() &&
-  //     read_period() == rhs.read_period()
-  //   );
-  // }
+  bool Configuration::operator==(const Configuration& rhs) const {
+    return (
+      wifi_ssid() == rhs.wifi_ssid() &&
+      wifi_password() == rhs.wifi_password() &&
+      mqtt_broker() == rhs.mqtt_broker() &&
+      mqtt_port() == rhs.mqtt_port() &&
+      mqtt_topic() == rhs.mqtt_topic() &&
+      use_dhcp() == rhs.use_dhcp() &&
+      static_ip() == rhs.static_ip() &&
+      subnet_mask() == rhs.subnet_mask() &&
+      default_gateway() == rhs.default_gateway() &&
+      read_period() == rhs.read_period()
+    );
+  }
 
-  // bool Configuration::operator!=(const Configuration& rhs) {
-  //   return !(*this == rhs);
-  // }
+  bool Configuration::operator!=(const Configuration& rhs) const {
+    return !(*this == rhs);
+  }
 
 };

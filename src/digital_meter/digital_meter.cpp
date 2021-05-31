@@ -1,5 +1,5 @@
 #include "digital_meter.h"
-#include "crc_checker.h"
+#include "crc_helper.h"
 #include "../logging/logger.h"
 
 namespace CDEM {
@@ -54,7 +54,7 @@ namespace CDEM {
 
           DoLog.verbose(String(buffer), "digital-meter");
 
-          if (CrcChecker::check_crc(buffer, readPointer)) {
+          if (CrcHelper::check_crc(buffer, readPointer)) {
             DoLog.verbose("Datagram is valid (CRC check passed)", "digital-meter");
             return MeterStatus::DATAGRAM_READY;
           } else {

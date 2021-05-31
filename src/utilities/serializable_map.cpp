@@ -1,4 +1,5 @@
 #include "serializable_map.h"
+#include "../helpers/crc_checker.h"
 
 namespace CDEM {
 
@@ -77,7 +78,9 @@ namespace CDEM {
   size_t SerializableMap::serialize(char * buffer, size_t bufferSize) const {
     size_t mapSize = size();
 
-    if (bufferSize < (mapSize + sizeof(size_t))) return -1;
+    if (bufferSize < (mapSize + sizeof(size_t) + sizeof(uint16_t))) return 0;
+      // size_t for size
+      // uint16_t for crc
 
     char * pBuffer = buffer;
 
@@ -102,6 +105,10 @@ namespace CDEM {
       pBuffer += (it->second).length;
     }
 
+    uint16_t crc = CrcChecker::calculate_crc(buffer, (pBuffer-buffer));
+    memcpy(pBuffer, (char*)(&crc), sizeof(uint16_t));
+    pBuffer += sizeof(uint16_t);
+
     return (pBuffer - buffer);
   }
 
@@ -113,7 +120,16 @@ namespace CDEM {
     pBuffer += sizeof(size_t);
 
     // Sanity check
-    if (bufferSize < (dataSize + sizeof(size_t))) return -1;
+    if (bufferSize < (dataSize + sizeof(size_t) + sizeof(uint16_t))) return 0;
+      // size_t for size
+      // uint16_t for crc
+
+    // Check CRC
+    uint16_t crc = 0;
+    memcpy(&crc, pBuffer+dataSize, sizeof(uint16_t));
+    if (!CrcChecker::is_crc_valid(buffer, (dataSize+sizeof(size_t)), crc)) {
+      return 0;
+    }
 
     // Deserialize map
     while ((pBuffer - buffer) < dataSize) {

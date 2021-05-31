@@ -22,7 +22,7 @@ namespace CDEM {
   }
 
   bool CrcChecker::is_crc_valid(const char * buffer, size_t bufferLength, uint16_t crc) {
-    return calculate_crc(buffer, bufferLength) == crc;
+    return (calculate_crc(buffer, bufferLength) == crc);
   }
 
 };

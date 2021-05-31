@@ -35,4 +35,14 @@ namespace CDEM {
     commLed.on();
   }
 
+  void DeviceStatus::meter_ok(void) {
+    dataLed.stop();
+    dataLed.on();
+  }
+
+  void DeviceStatus::meter_error(void) {
+    dataLed.start(500, 500);
+  }
+
+
 };

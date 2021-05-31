@@ -60,6 +60,7 @@ namespace CDEM {
             meter.disable();
             currentState = State::IDLE;
             startMillis = currentMillis;
+            deviceStatus->meter_error();
           } // else MeterStatus::IN_PROGRESS
           break;
         }
@@ -76,6 +77,7 @@ namespace CDEM {
           DoLog.info("Successfully decoded datagram ready for publish", "smart");
           DoLog.verbose(datagram.to_string(), "smart");
           currentState = State::DATAGRAM_DECODED;
+          deviceStatus->meter_ok();
           break;
 
         // Publish data to MQTT

@@ -19,10 +19,9 @@ namespace CDEM {
       void wifi_no_mqtt(void);
       void communications_ok(void);
 
-    // public:   // Data
-    //   void meter_starting(void);
-    //   void meter_data_ready(void);
-    //   void meter_error(void);
+    public:   // Data
+      void meter_ok(void);
+      void meter_error(void);
 
     private:
       StatusLed dataLed;

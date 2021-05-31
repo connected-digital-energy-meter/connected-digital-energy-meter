@@ -29,7 +29,7 @@ namespace CDEM {
     public:
       size_t size(void) const;
       size_t serialize(char * buffer, size_t bufferSize) const;
-      size_t deserialize(const char * buffer, size_t configSize);
+      size_t deserialize(const char * buffer, size_t bufferSize);
 
     public:
       ~SerializableMap(void);

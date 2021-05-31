@@ -75,12 +75,18 @@ namespace CDEM {
   }
 
   size_t SerializableMap::serialize(char * buffer, size_t bufferSize) const {
-    if (bufferSize < size()) return -1;
+    size_t mapSize = size();
+
+    if (bufferSize < (mapSize + sizeof(size_t))) return -1;
+
+    char * pBuffer = buffer;
+
+    // Serialize map size:
+    *((size_t*)pBuffer) = mapSize;
+    pBuffer += sizeof(size_t);
 
     // Mapping:
     // KEY\0   DATA_SIZE (4 bytes = sizeof(size_t))   DATA 
-
-    char * pBuffer = buffer;
     for (std::map<String, DataBlock>::const_iterator it = memoryMap.begin(); it != memoryMap.end(); it++) {
 
       // Copy the key
@@ -88,8 +94,8 @@ namespace CDEM {
       pBuffer += (it->first).length() + 1;    // +1 for \0
 
       // Copy data length
-      *((size_t*)pBuffer) = (it->second).length;
-      pBuffer += sizeof(size_t);
+      memcpy(pBuffer, (char*)&(it->second).length, sizeof((it->second).length));
+      pBuffer += sizeof((it->second).length);
 
       // Copy data
       memcpy(pBuffer, (it->second).memory, (it->second).length);
@@ -99,14 +105,24 @@ namespace CDEM {
     return (pBuffer - buffer);
   }
 
-  size_t SerializableMap::deserialize(const char * buffer, size_t configSize) {
+  size_t SerializableMap::deserialize(const char * buffer, size_t bufferSize) {
     const char * pBuffer = buffer;
 
-    while ((pBuffer - buffer) < configSize) {
+    // First determine data size:
+    size_t dataSize = *((size_t*)pBuffer);
+    pBuffer += sizeof(size_t);
+
+    // Sanity check
+    if (bufferSize < (dataSize + sizeof(size_t))) return -1;
+
+    // Deserialize map
+    while ((pBuffer - buffer) < dataSize) {
       String key = String(pBuffer);   // Should create String from start to \0
       pBuffer += key.length() + 1;
 
-      size_t length = *((size_t*)pBuffer);
+      // Copy data length
+      size_t length = 0;
+      memcpy(&length, pBuffer, sizeof(size_t));
       pBuffer += sizeof(size_t);
 
       const void * dataStart = pBuffer;

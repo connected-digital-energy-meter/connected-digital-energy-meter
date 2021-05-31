@@ -7,7 +7,7 @@ namespace CDEM {
     _pin = pin;
     _inverted = inverted;
     pinMode(_pin, OUTPUT);
-    led_off();
+    off();
   }
 
   StatusLed::~StatusLed(void) {
@@ -17,29 +17,30 @@ namespace CDEM {
   void StatusLed::start(unsigned int onTime, unsigned int offTime, unsigned int delayTime) {
     _onTime = onTime;
     _offTime = offTime;
+    stop();
     _ticker.once_ms(delayTime, std::bind(&StatusLed::scheduled_on, this));
   }
 
   void StatusLed::stop(void) {
-    led_off();
+    off();
     _ticker.detach();
   }
 
   void StatusLed::scheduled_on(void) {
-    led_on();
+    on();
     _ticker.once_ms(_onTime, std::bind(&StatusLed::scheduled_off, this));
   }
 
   void StatusLed::scheduled_off(void) {
-    led_off();
+    off();
     _ticker.once_ms(_offTime, std::bind(&StatusLed::scheduled_on, this));
   }
 
-  void StatusLed::led_on(void) {
+  void StatusLed::on(void) {
     digitalWrite(_pin, (_inverted ? LOW : HIGH));
   }
 
-  void StatusLed::led_off(void) {
+  void StatusLed::off(void) {
     digitalWrite(_pin, (_inverted ? HIGH : LOW));
   }
 

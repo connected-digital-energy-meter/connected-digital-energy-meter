@@ -2,6 +2,8 @@
 #include <ArduinoJson.h>
 #include "../logging/logger.h"
 #include "../digital_meter/decoder.h"
+#include <ESP8266WiFi.h>
+
 
 namespace CDEM {
 
@@ -13,13 +15,16 @@ namespace CDEM {
     this->publisher = publisher;
   }
 
-  void SmartDigitalMeter::start(Configuration * config) {
+  void SmartDigitalMeter::start(const Configuration * config, DeviceStatus * deviceStatus) {
     this->deviceConfig = config;
     this->period = config->read_period() * 1000;
+    this->deviceStatus = deviceStatus;
 
     // Start time for period
     acquireData = true;
     startMillis = millis();
+    lastCommCheck = startMillis;
+    communications_check();
   }
 
   void SmartDigitalMeter::stop(void) {
@@ -29,6 +34,11 @@ namespace CDEM {
   void SmartDigitalMeter::process(void) {
     // Current time for period
     currentMillis = millis();
+
+    if ((currentMillis - lastCommCheck) >= 10000) {
+      communications_check();
+      lastCommCheck = millis();
+    }
 
     // Wait until next period  
     if(acquireData && (currentMillis - startMillis) >= period) {
@@ -112,6 +122,25 @@ namespace CDEM {
     } else {
       DoLog.warning("No MQTT publisher is set", "smart");
     }
+
+    return false;
+  }
+
+  void SmartDigitalMeter::communications_check(void) {
+    if (WiFi.status() != WL_CONNECTED) {
+      DoLog.warning("Not connected to WiFi", "comm-state");
+      deviceStatus->connecting_wifi();
+      return;
+    }
+
+    if (!publisher->is_connected()) {
+      DoLog.warning("Not connected to MQTT broker", "comm-state");
+      deviceStatus->wifi_no_mqtt();
+      return;
+    }
+        
+    DoLog.verbose("All operational", "comm-state");
+    deviceStatus->communications_ok();
   }
 
 };

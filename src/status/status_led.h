@@ -20,9 +20,9 @@ namespace CDEM {
       void scheduled_on(void);
       void scheduled_off(void);
 
-    private:
-      void led_on(void);
-      void led_off(void);
+    public:
+      void on(void);
+      void off(void);
 
     private:
       int _pin;

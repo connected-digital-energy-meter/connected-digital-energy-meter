@@ -10,3 +10,6 @@
 #include "hardware/pcb_v4.h"
 #include "helpers/ip_parser.h"
 #include "captive_portal/captive_portal.h"
+#include "config/configuration_manager.h"
+#include "status/device_status.h"
+#include "version.h"

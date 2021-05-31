@@ -131,4 +131,12 @@ namespace CDEM {
     return !(*this == rhs);
   }
 
+  size_t Configuration::serialize(char * buffer, size_t bufferSize) const {
+    return datamap.serialize(buffer, bufferSize);
+  }
+
+  size_t Configuration::deserialize(const char * buffer, size_t bufferSize) {
+    return datamap.deserialize(buffer, bufferSize);
+  }
+
 };

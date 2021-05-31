@@ -45,6 +45,10 @@ namespace CDEM {
       String to_string(void) const;
 
     public:
+      size_t serialize(char * buffer, size_t bufferSize) const;
+      size_t deserialize(const char * buffer, size_t bufferSize);
+
+    public:
       bool operator==(const Configuration& rhs) const;
       bool operator!=(const Configuration& rhs) const;
 

@@ -65,23 +65,14 @@ namespace CDEM {
           break;
         }
 
-        // Stop requesting data
+        // Decode the datagram
         case State::DATAGRAM_READY:
           meter.disable();
-          currentState = State::PROCESSING_DATAGRAM;
-          break;
-
-        // Decode data  
-        case State::PROCESSING_DATAGRAM:
           datagram = Decoder::decode(datagramBuffer, sizeof(datagramBuffer));
           DoLog.info("Successfully decoded datagram ready for publish", "smart");
           DoLog.verbose(datagram.to_string(), "smart");
-          currentState = State::DATAGRAM_DECODED;
           deviceStatus->meter_ok();
-          break;
 
-        // Publish data to MQTT
-        case State::DATAGRAM_DECODED:
           publish_datagram();
           currentState = State::IDLE;     // Ready for next request
           startMillis = currentMillis;    // Reset timer
@@ -102,7 +93,7 @@ namespace CDEM {
       bool schededuleOk = true;
       std::vector<String> keys = datagram.keys();
 
-      StaticJsonDocument<1000> json;
+      StaticJsonDocument<MAX_DATAGRAM_JSON_SIZE> json;
       for (String key : keys) {
         String topic = deviceConfig->mqtt_topic() + "/" + key;
         String data = String(datagram.get(key));

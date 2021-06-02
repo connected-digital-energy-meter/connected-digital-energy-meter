@@ -33,9 +33,7 @@ namespace CDEM {
       enum class State {
         IDLE,
         READING_DATAGRAM,
-        DATAGRAM_READY,
-        PROCESSING_DATAGRAM,
-        DATAGRAM_DECODED
+        DATAGRAM_READY
       };
 
     private:
@@ -58,6 +56,8 @@ namespace CDEM {
       unsigned long lastCommCheck = 0;
       DeviceStatus * deviceStatus;
       DeviceStats stats;
+
+      const static unsigned int MAX_DATAGRAM_JSON_SIZE = 1000;
   };
 
 };

@@ -5,6 +5,7 @@
 #include "../digital_meter/datagram.h"
 #include "../digital_meter/digital_meter.h"
 #include "../status/device_status.h"
+#include "../stats/device_stats.h"
 
 namespace CDEM {
 
@@ -56,6 +57,7 @@ namespace CDEM {
 
       unsigned long lastCommCheck = 0;
       DeviceStatus * deviceStatus;
+      DeviceStats stats;
   };
 
 };

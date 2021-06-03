@@ -3,7 +3,7 @@
 #include "../logging/logger.h"
 #include "../digital_meter/decoder.h"
 #include <ESP8266WiFi.h>
-
+#include "../stats/meter_stats_to_json_converter.h"
 
 namespace CDEM {
 
@@ -61,6 +61,9 @@ namespace CDEM {
             currentState = State::IDLE;
             startMillis = currentMillis;
             deviceStatus->meter_error();
+
+            if (status == DigitalMeter::MeterStatus::TIMED_OUT) stats.increment_timeouts();
+            else stats.increment_crc_errors();
           } // else MeterStatus::IN_PROGRESS
           break;
         }
@@ -72,51 +75,70 @@ namespace CDEM {
           DoLog.info("Successfully decoded datagram ready for publish", "smart");
           DoLog.verbose(datagram.to_string(), "smart");
           deviceStatus->meter_ok();
+          stats.increment_decoded();
 
-          publish_datagram();
+          if (publish_datagram()) stats.increment_published();
           currentState = State::IDLE;     // Ready for next request
           startMillis = currentMillis;    // Reset timer
           break;
       }
     }
 
+    if ((currentMillis - lastStatsPublish) >= STATS_PUBLISH_TIME) {
+      publish_stats();
+      lastStatsPublish = millis();
+    }
+
     if (publisher) publisher->process();
   }
 
   bool SmartDigitalMeter::publish_datagram(void) {
-    if (publisher) {
-      if (!publisher->is_connected()) {
-        DoLog.warning("Could not publish. Publisher is not connected", "smart");
-        return false;
-      }
-
-      bool schededuleOk = true;
-      std::vector<String> keys = datagram.keys();
-
-      StaticJsonDocument<MAX_DATAGRAM_JSON_SIZE> json;
-      for (String key : keys) {
-        String topic = deviceConfig->mqtt_topic() + "/" + key;
-        String data = String(datagram.get(key));
-        schededuleOk = schededuleOk && publisher->publish(topic, data);
-        json[key] = datagram.get(key);
-      }
-
-      String payload = "";
-      serializeJson(json, payload);
-      String topic = deviceConfig->mqtt_topic() + "/payload";
-      schededuleOk = schededuleOk && publisher->publish(topic, payload);
-      
-      if (schededuleOk) {
-        DoLog.info("Datagram scheduled for publish", "smart");
-      } else {
-        DoLog.warning("Failed to schedule datagram for publish", "smart");
-      }
-      return schededuleOk;
-    } else {
+    if (!publisher) {
       DoLog.warning("No MQTT publisher is set", "smart");
+      return false;
     }
 
-    return false;
+    if (!publisher->is_connected()) {
+      DoLog.warning("Could not publish. Publisher is not connected", "smart");
+      return false;
+    }
+
+    bool schededuleOk = true;
+    std::vector<String> keys = datagram.keys();
+
+    StaticJsonDocument<MAX_DATAGRAM_JSON_SIZE> json;
+    for (String key : keys) {
+      String topic = deviceConfig->mqtt_topic() + "/" + key;
+      String data = String(datagram.get(key));
+      schededuleOk = schededuleOk && publisher->publish(topic, data);
+      json[key] = datagram.get(key);
+    }
+
+    String payload = "";
+    serializeJson(json, payload);
+    String topic = deviceConfig->mqtt_topic() + "/payload";
+    schededuleOk = schededuleOk && publisher->publish(topic, payload);
+    
+    if (schededuleOk) DoLog.info("Datagram scheduled for publish", "smart");
+    else DoLog.warning("Failed to schedule datagram for publish", "smart");
+      
+    return schededuleOk;
+  }
+
+  bool SmartDigitalMeter::publish_stats(void) {
+    if (!publisher) {
+      DoLog.warning("No MQTT publisher is set", "smart");
+      return false;
+    }
+
+    if (!publisher->is_connected()) {
+      DoLog.warning("Could not publish. Publisher is not connected", "smart");
+      return false;
+    }
+
+    String topic = deviceConfig->mqtt_topic() + "/stats";
+    String data = MeterStatsToJsonConverter::to_json_string(&stats);
+    return publisher->publish(topic, data);
   }
 
   void SmartDigitalMeter::communications_check(void) {

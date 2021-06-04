@@ -24,6 +24,7 @@ namespace CDEM {
     acquireData = true;
     startMillis = millis();
     lastCommCheck = startMillis;
+    lastStatsPublish = startMillis;
     communications_check();
   }
 
@@ -85,6 +86,7 @@ namespace CDEM {
     }
 
     if ((currentMillis - lastStatsPublish) >= STATS_PUBLISH_TIME) {
+      DoLog.verbose("Publishing stats of smart meter", "smart");
       publish_stats();
       lastStatsPublish = millis();
     }

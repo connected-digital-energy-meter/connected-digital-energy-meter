@@ -60,7 +60,7 @@ namespace CDEM {
       unsigned long lastStatsPublish = 0;
 
       const static unsigned int MAX_DATAGRAM_JSON_SIZE = 1000;
-      const static unsigned long STATS_PUBLISH_TIME = 60 * 1000;
+      const static unsigned long STATS_PUBLISH_TIME = 60000L;
   };
 
 };

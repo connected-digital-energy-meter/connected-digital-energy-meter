@@ -12,12 +12,6 @@ Access via [http://172.16.10.1](http://172.16.10.1) or scan the QR code below.
 
 ## Dependencies
 
-### The CDEM Library
-
-The firmware for the ESP12 module you downloaded is only the tip of the iceberg. Most of the functionality of the firmware is provided by the `Connected Digital Energy Meter` library.
-
-Download the latest release of the [Connected Digital Energy Meter library](https://github.com/connected-digital-energy-meter/connected-digital-energy-meter/releases) as a zip file and include it via `Sketch => Include Library => Add ZIP Library ...`.
-
 ### The PubSubClient Library
 
 PubSubClient is a client library for MQTT messaging.

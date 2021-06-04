@@ -6,7 +6,7 @@ namespace CDEM {
 
   ConfigurationManager::ConfigurationManager(uint16_t identifier, size_t eepromSize) {
     this->eepromSize = eepromSize;
-    this->configId = configId;
+    this->configId = identifier;
     initialize_eeprom();
   }
 

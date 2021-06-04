@@ -5,6 +5,7 @@
 #include "../digital_meter/datagram.h"
 #include "../digital_meter/digital_meter.h"
 #include "../status/device_status.h"
+#include "../stats/meter_stats.h"
 
 namespace CDEM {
 
@@ -23,6 +24,7 @@ namespace CDEM {
 
     private:
       bool publish_datagram(void);
+      bool publish_stats(void);
 
     private:
       void communications_check(void);
@@ -32,9 +34,7 @@ namespace CDEM {
       enum class State {
         IDLE,
         READING_DATAGRAM,
-        DATAGRAM_READY,
-        PROCESSING_DATAGRAM,
-        DATAGRAM_DECODED
+        DATAGRAM_READY
       };
 
     private:
@@ -56,6 +56,11 @@ namespace CDEM {
 
       unsigned long lastCommCheck = 0;
       DeviceStatus * deviceStatus;
+      MeterStats stats;
+      unsigned long lastStatsPublish = 0;
+
+      const static unsigned int MAX_DATAGRAM_JSON_SIZE = 1000;
+      const static unsigned long STATS_PUBLISH_TIME = 60 * 1000;
   };
 
 };

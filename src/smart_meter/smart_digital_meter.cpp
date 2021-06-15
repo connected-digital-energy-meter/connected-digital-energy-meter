@@ -85,13 +85,15 @@ namespace CDEM {
       }
     }
 
-    if ((currentMillis - lastStatsPublish) >= STATS_PUBLISH_TIME) {
-      DoLog.verbose("Publishing stats of smart meter", "smart");
-      publish_stats();
-      lastStatsPublish = millis();
-    }
+    if (currentState != State::READING_DATAGRAM) {
+      if ((currentMillis - lastStatsPublish) >= STATS_PUBLISH_TIME) {
+        DoLog.verbose("Publishing stats of smart meter", "smart");
+        publish_stats();
+        lastStatsPublish = millis();
+      }
 
-    if (publisher) publisher->process();
+      if (currentState != State::READING_DATAGRAM && publisher) publisher->process();
+    }
   }
 
   bool SmartDigitalMeter::publish_datagram(void) {

@@ -102,11 +102,6 @@ namespace CDEM {
       return false;
     }
 
-    if (!publisher->is_connected()) {
-      DoLog.warning("Could not publish. Publisher is not connected", "smart");
-      return false;
-    }
-
     bool schededuleOk = true;
     std::vector<String> keys = datagram.keys();
 
@@ -135,11 +130,6 @@ namespace CDEM {
       return false;
     }
 
-    if (!publisher->is_connected()) {
-      DoLog.warning("Could not publish. Publisher is not connected", "smart");
-      return false;
-    }
-
     String topic = deviceConfig->mqtt_topic() + "/stats";
     String data = MeterStatsToJsonConverter::to_json_string(&stats);
     return publisher->publish(topic, data);
@@ -158,7 +148,7 @@ namespace CDEM {
       return;
     }
         
-    DoLog.verbose("All operational", "comm-state");
+    DoLog.verbose("All communications operational", "comm-state");
     deviceStatus->communications_ok();
   }
 

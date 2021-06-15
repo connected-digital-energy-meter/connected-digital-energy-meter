@@ -11,6 +11,7 @@ namespace CDEM {
 
     public:
       PubSubPublisher(WiFiClient &wifiClient);
+      ~PubSubPublisher(void);
 
     public:
       virtual void connect(String broker, unsigned int port);
@@ -24,12 +25,19 @@ namespace CDEM {
       virtual void process(void);
 
     private:
+      void build_client(void);
+      void destroy_client(void);
       void connect(void);
     
     private:
-      PubSubClient client;
+      String broker = "";
+      int port = 1883;
+      WiFiClient &wifiClient;
+      PubSubClient * client = nullptr;
       String clientId;
       const unsigned int CLIENT_BUFFER_SIZE = 1024;
+      static const unsigned long RETRY_CONNECT_INTERVAL = 6000;
+      unsigned long lastConnectTry = 0;
   };
 
 };

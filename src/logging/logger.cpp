@@ -40,6 +40,7 @@ namespace CDEM {
       case LogLevel::WARNING: return "WARNING";
       case LogLevel::ERROR: return "ERROR";
     }
+    return "";
   }
 
   void Logger::log(String message, String module, LogLevel level) {

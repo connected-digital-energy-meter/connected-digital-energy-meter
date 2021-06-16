@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include "../utilities/uptime/uptime.h"
 
 namespace CDEM {
 
@@ -19,13 +20,19 @@ namespace CDEM {
       uint32_t crc_errors(void) const;
 
     public:
-      String to_string(void) const;
+      void update_uptime(void);
+      Uptime uptime(void);
+
+    public:
+      String to_string(void);
 
     private:
       uint32_t _decoded = 0;
       uint32_t _published = 0;
       uint32_t _timeouts = 0;
       uint32_t _crcErrors = 0;
+      Uptime _uptime;
+
   };
 
 };

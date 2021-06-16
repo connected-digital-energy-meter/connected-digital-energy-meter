@@ -83,6 +83,8 @@ namespace CDEM {
     }
 
     if (currentState != State::READING_DATAGRAM) {
+      stats.update_uptime();
+      
       if ((currentMillis - lastStatsPublish) >= STATS_PUBLISH_TIME) {
         if (!announceSend) publish_startup_message();
         DoLog.verbose("Publishing stats of smart meter", "smart");
@@ -90,7 +92,7 @@ namespace CDEM {
         lastStatsPublish = millis();
       }
 
-      if (currentState != State::READING_DATAGRAM && publisher) publisher->process();
+      if (publisher) publisher->process();
     }
   }
 

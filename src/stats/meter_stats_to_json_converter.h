@@ -8,7 +8,7 @@ namespace CDEM {
   class MeterStatsToJsonConverter {
 
     public:
-      static String to_json_string(const MeterStats * stats);
+      static String to_json_string(MeterStats * stats);
 
   };
 

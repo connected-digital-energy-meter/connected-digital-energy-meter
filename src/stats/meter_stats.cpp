@@ -34,11 +34,20 @@ namespace CDEM {
     return _crcErrors;
   }
 
-  String MeterStats::to_string(void) const {
+  void MeterStats::update_uptime(void) {
+    _uptime.update();
+  }
+
+  Uptime MeterStats::uptime(void) {
+    return _uptime;
+  }
+
+  String MeterStats::to_string(void) {
     return "Decoded datagrams: " + String(decoded())
       + "\nPublished datagrams: " + String(published())
       + "\nTimeouts: " + String(timeouts())
-      + "\nCRC Errors: " + String(crc_errors());
+      + "\nCRC Errors: " + String(crc_errors())
+      + "\nUptime: " + _uptime.to_string();
   }
 
 };

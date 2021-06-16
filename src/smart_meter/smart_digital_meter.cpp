@@ -5,6 +5,8 @@
 #include <ESP8266WiFi.h>
 #include "../stats/meter_stats_to_json_converter.h"
 #include "../digital_meter/datagram_to_json_converter.h"
+#include "../system/system_details_to_json_converter.h"
+#include "../version.h"
 
 namespace CDEM {
 
@@ -25,8 +27,7 @@ namespace CDEM {
     acquireData = true;
     startMillis = millis();
     lastStatsPublish = startMillis;
-
-    // TODO: Publish startup message
+    publish_startup_message();
   }
 
   void SmartDigitalMeter::stop(void) {
@@ -83,6 +84,7 @@ namespace CDEM {
 
     if (currentState != State::READING_DATAGRAM) {
       if ((currentMillis - lastStatsPublish) >= STATS_PUBLISH_TIME) {
+        if (!announceSend) publish_startup_message();
         DoLog.verbose("Publishing stats of smart meter", "smart");
         publish_stats();
         lastStatsPublish = millis();
@@ -119,6 +121,21 @@ namespace CDEM {
       "stats",
       MeterStatsToJsonConverter::to_json_string(&stats)
     );
+  }
+
+  void SmartDigitalMeter::publish_startup_message(void) {
+    announceSend = publish(
+      "announce",
+      SystemDetailsToJsonConverter::to_json_string(
+        WiFi.localIP().toString(),
+        WiFi.macAddress(),
+        CDEM_LIB_VERSION,
+        "v4.0"      // TODO: Replace with actual hw version
+      )
+    );
+
+    if (!announceSend) DoLog.warning("Failed to send announce via MQTT. Will retry later.", "smart");
+    else DoLog.verbose("Announce message successfully send.", "smart");
   }
 
   bool SmartDigitalMeter::publish(String subtopic, String payload) {

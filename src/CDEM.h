@@ -13,4 +13,4 @@
 #include "config/configuration_manager.h"
 #include "status/device_status.h"
 #include "version.h"
-#include "boot/system.h"
+#include "system/system.h"

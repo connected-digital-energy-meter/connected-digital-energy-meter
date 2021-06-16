@@ -25,6 +25,7 @@ namespace CDEM {
     private:
       bool publish_datagram(void);
       bool publish_stats(void);
+      void publish_startup_message(void);
       bool publish(String subtopic, String payload);
 
     private:
@@ -56,6 +57,8 @@ namespace CDEM {
       MeterStats stats;
       unsigned long lastStatsPublish = 0;
       const static unsigned long STATS_PUBLISH_TIME = 60000L;
+
+      bool announceSend = false;
   };
 
 };

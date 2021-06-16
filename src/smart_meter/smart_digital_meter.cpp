@@ -93,39 +93,42 @@ namespace CDEM {
   }
 
   bool SmartDigitalMeter::publish_datagram(void) {
-    if (!publisher) {
-      DoLog.warning("No MQTT publisher is set", "smart");
-      return false;
-    }
-
-    bool schededuleOk = true;
-    std::vector<String> keys = datagram.keys();
-
-    for (String key : keys) {
-      String topic = deviceConfig->mqtt_topic() + "/" + key;
-      String data = String(datagram.get(key));
-      schededuleOk = schededuleOk && publisher->publish(topic, data);
-    }
-
-    String topic = deviceConfig->mqtt_topic() + "/payload";
-    String payload = DatagramToJsonConverter::to_json_string(&datagram);
-    schededuleOk = schededuleOk && publisher->publish(topic, payload);
+    bool scheduleOk = true;
     
-    if (schededuleOk) DoLog.info("Datagram scheduled for publish", "smart");
+    std::vector<String> keys = datagram.keys();
+    for (String key : keys) {
+      scheduleOk = scheduleOk && publish(
+        key,
+        String(datagram.get(key))
+      );
+    }
+
+    scheduleOk = scheduleOk && publish(
+      "payload",
+      DatagramToJsonConverter::to_json_string(&datagram)
+    );
+    
+    if (scheduleOk) DoLog.info("Datagram scheduled for publish", "smart");
     else DoLog.warning("Failed to schedule datagram for publish", "smart");
       
-    return schededuleOk;
+    return scheduleOk;
   }
 
   bool SmartDigitalMeter::publish_stats(void) {
+    return publish(
+      "stats",
+      MeterStatsToJsonConverter::to_json_string(&stats)
+    );
+  }
+
+  bool SmartDigitalMeter::publish(String subtopic, String payload) {
     if (!publisher) {
       DoLog.warning("No MQTT publisher is set", "smart");
       return false;
     }
 
-    String topic = deviceConfig->mqtt_topic() + "/stats";
-    String data = MeterStatsToJsonConverter::to_json_string(&stats);
-    return publisher->publish(topic, data);
+    String topic = deviceConfig->mqtt_topic() + "/" + subtopic;
+    return publisher->publish(topic, payload);
   }
 
 };

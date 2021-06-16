@@ -25,6 +25,7 @@ namespace CDEM {
     private:
       bool publish_datagram(void);
       bool publish_stats(void);
+      bool publish(String subtopic, String payload);
 
     private:
       // Define a program state class

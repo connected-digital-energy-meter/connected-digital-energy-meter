@@ -4,6 +4,7 @@
 #include "../digital_meter/decoder.h"
 #include <ESP8266WiFi.h>
 #include "../stats/meter_stats_to_json_converter.h"
+#include "../digital_meter/datagram_to_json_converter.h"
 
 namespace CDEM {
 
@@ -26,6 +27,8 @@ namespace CDEM {
     lastCommCheck = startMillis;
     lastStatsPublish = startMillis;
     communications_check();
+
+    // TODO: Publish startup message
   }
 
   void SmartDigitalMeter::stop(void) {
@@ -105,17 +108,14 @@ namespace CDEM {
     bool schededuleOk = true;
     std::vector<String> keys = datagram.keys();
 
-    StaticJsonDocument<MAX_DATAGRAM_JSON_SIZE> json;
     for (String key : keys) {
       String topic = deviceConfig->mqtt_topic() + "/" + key;
       String data = String(datagram.get(key));
       schededuleOk = schededuleOk && publisher->publish(topic, data);
-      json[key] = datagram.get(key);
     }
 
-    String payload = "";
-    serializeJson(json, payload);
     String topic = deviceConfig->mqtt_topic() + "/payload";
+    String payload = DatagramToJsonConverter::to_json_string(&datagram);
     schededuleOk = schededuleOk && publisher->publish(topic, payload);
     
     if (schededuleOk) DoLog.info("Datagram scheduled for publish", "smart");

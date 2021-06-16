@@ -27,9 +27,6 @@ namespace CDEM {
       bool publish_stats(void);
 
     private:
-      void communications_check(void);
-
-    private:
       // Define a program state class
       enum class State {
         IDLE,
@@ -48,18 +45,15 @@ namespace CDEM {
 
       // Set for periodic measurement
       long period = 10000L;
-      unsigned long startMillis;
-      unsigned long currentMillis;
+      unsigned long startMillis = 0;
+      unsigned long currentMillis = 0;
 
       // Declare State and set state to IDLE
       State currentState = State::IDLE;
 
-      unsigned long lastCommCheck = 0;
       DeviceStatus * deviceStatus;
       MeterStats stats;
       unsigned long lastStatsPublish = 0;
-
-      // const static unsigned int MAX_DATAGRAM_JSON_SIZE = 1000;
       const static unsigned long STATS_PUBLISH_TIME = 60000L;
   };
 

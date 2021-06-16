@@ -24,9 +24,7 @@ namespace CDEM {
     // Start time for period
     acquireData = true;
     startMillis = millis();
-    lastCommCheck = startMillis;
     lastStatsPublish = startMillis;
-    communications_check();
 
     // TODO: Publish startup message
   }
@@ -38,11 +36,6 @@ namespace CDEM {
   void SmartDigitalMeter::process(void) {
     // Current time for period
     currentMillis = millis();
-
-    if ((currentMillis - lastCommCheck) >= 10000) {
-      communications_check();
-      lastCommCheck = millis();
-    }
 
     // Wait until next period  
     if(acquireData && (currentMillis - startMillis) >= period) {
@@ -133,23 +126,6 @@ namespace CDEM {
     String topic = deviceConfig->mqtt_topic() + "/stats";
     String data = MeterStatsToJsonConverter::to_json_string(&stats);
     return publisher->publish(topic, data);
-  }
-
-  void SmartDigitalMeter::communications_check(void) {
-    if (WiFi.status() != WL_CONNECTED) {
-      DoLog.warning("Not connected to WiFi", "comm-state");
-      deviceStatus->connecting_wifi();
-      return;
-    }
-
-    if (!publisher->is_connected()) {
-      DoLog.warning("Not connected to MQTT broker", "comm-state");
-      deviceStatus->wifi_no_mqtt();
-      return;
-    }
-        
-    DoLog.verbose("All communications operational", "comm-state");
-    deviceStatus->communications_ok();
   }
 
 };

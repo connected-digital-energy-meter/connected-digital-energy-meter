@@ -44,7 +44,7 @@ namespace CDEM {
       const Configuration * deviceConfig;
 
       // Set for periodic measurement
-      long period = 10000L;
+      unsigned long period = 10000L;
       unsigned long startMillis = 0;
       unsigned long currentMillis = 0;
 

@@ -23,11 +23,11 @@ namespace CDEM {
   }
 
   void DeviceStatus::connecting_wifi(void) {
-    commLed.start(100, 900);
+    commLed.stop();
   }
 
   void DeviceStatus::wifi_no_mqtt(void) {
-    commLed.start(900, 100);
+    commLed.start(100, 900);    // Short flash
   }
 
   void DeviceStatus::communications_ok(void) {

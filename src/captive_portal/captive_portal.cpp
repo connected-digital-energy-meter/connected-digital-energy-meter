@@ -32,6 +32,8 @@ namespace CDEM {
 
     if (setup_access_point()) {
       DoLog.info("Soft-AP IP address = " + WiFi.softAPIP().toString(), "portal");
+      DoLog.verbose("Setting up the dns catch all", "portal");
+      setup_dns_server();
       DoLog.verbose("Setting up the webserver", "portal");
       setup_web_server();
       return true;
@@ -53,6 +55,7 @@ namespace CDEM {
       stationsConnected = newConnected;
     }
 
+    dnsServer.processNextRequest();
     webServer.handleClient();
 
     if (!done && idle && (millis() > startTime + waitTime)) {
@@ -90,6 +93,14 @@ namespace CDEM {
     return status;
   }
 
+  void CaptivePortal::setup_dns_server(void) {
+    IPAddress portalIp(172, 16, 10, 1);       // TODO - Refactor
+
+    // if DNSServer is started with "*" for domain name, it will reply with
+    // provided IP to all DNS request
+    dnsServer.start(DNS_PORT, "*", portalIp);
+  }
+
   void CaptivePortal::setup_web_server(void) {
     webServer.on("/", [=]() {
       DoLog.info("Getting request for index page", "portal");
@@ -121,7 +132,9 @@ namespace CDEM {
     });
 
     webServer.onNotFound([=]() {
-      this->webServer.send(200, "text/html", "Page not Found");
+      DoLog.info("Getting request for unknown route. Redirecting to /", "portal");
+      this->webServer.sendHeader("Location", String("/"), true);
+      this->webServer.send(302, "text/plain", "");
     });
 
     webServer.begin();

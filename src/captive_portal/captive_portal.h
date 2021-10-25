@@ -3,6 +3,7 @@
 #include "../config/configuration.h"
 #include <Arduino.h>
 #include <ESP8266WebServer.h>
+#include <DNSServer.h>
 
 namespace CDEM {
 
@@ -28,6 +29,7 @@ namespace CDEM {
 
     private:
       bool setup_access_point(void);
+      void setup_dns_server(void);
       void setup_web_server(void);
 
     private:
@@ -44,6 +46,9 @@ namespace CDEM {
 
       static const unsigned int WEBSERVER_PORT = 80;
       ESP8266WebServer webServer;
+
+      static const unsigned int DNS_PORT = 53;
+      DNSServer dnsServer;
 
       Configuration initialConfig;
       Configuration newConfig;

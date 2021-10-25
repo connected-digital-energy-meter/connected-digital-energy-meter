@@ -2,7 +2,7 @@
 
 A library for connecting a Belgian digital energy meter to your home automation system via MQTT.
 
-This library is part of the Connected Digital Energy Meter project. Check it out at [https://connected-digital-energy-meter.netlify.app](https://connected-digital-energy-meter.netlify.app).
+This library is part of the Connected Digital Energy Meter project. Check it out at [https://cdem.be](https://cdem.be).
 
 ## Configuration Page
 

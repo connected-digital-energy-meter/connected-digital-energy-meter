@@ -1,11 +1,9 @@
 #include "captive_portal.h"
 #include <ESP8266WiFi.h>
 #include "pages/index.h"
+#include "pages/success.h"
 #include "../logging/logger.h"
 #include "../config/configuration_validator.h"
-
-// TODO - Decent 404
-// TODO - Decent boot page
 
 namespace CDEM {
 
@@ -115,7 +113,7 @@ namespace CDEM {
         String errors = parse_config();
         if (errors == "") {
           DoLog.verbose("Configuration is valid", "portal");
-          this->webServer.send(200, "text/html", "Configuration is valid. Booting the system now ...");
+          this->webServer.send(200, "text/html", SuccessPage::render());
           done = true;
         } 
         else {
@@ -127,7 +125,7 @@ namespace CDEM {
 
     webServer.on("/cancel", [=]() {
       DoLog.info("Getting cancel request", "portal");
-      this->webServer.send(200, "text/html", "Booting the system now ...");
+      this->webServer.send(200, "text/html", SuccessPage::render());
       done = true;
     });
 

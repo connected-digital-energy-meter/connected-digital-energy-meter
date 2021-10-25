@@ -1,11 +1,27 @@
 const minify = require('html-minifier').minify;
 const fs = require('fs');
-const escape = require('js-string-escape')
+const escape = require('js-string-escape');
 
-fs.readFile("./original/index.html", "utf8", function(err, data) {
-  if(err) return console.log(err);
+const replace_html_header_file = (filename, content) => {
+  const file = `../../src/captive_portal/pages/${filename}`;
 
-  let minified = minify(data, {
+  return new Promise((resolve, reject) => {
+    fs.readFile(file, "utf8", function(err, header) {
+      if(err) reject(err);
+  
+      let result = header.replace(/return.*?$/m, content);
+  
+      fs.writeFile(file, result, function(err) {
+        if(err) reject(err);
+  
+        resolve("The file was saved!");
+      });
+    });
+  })
+}
+
+const minify_html = (input) => {
+  return minify(input, {
     // config
     collapseWhitespace: true,
     collapseInlineTagWhitespace: true,
@@ -13,6 +29,12 @@ fs.readFile("./original/index.html", "utf8", function(err, data) {
     minifyJS: true,
     removeComments: true
   });
+}
+
+fs.readFile("./original/index.html", "utf8", function(err, data) {
+  if(err) return console.log(err);
+
+  let minified = minify_html(data);
 
   let output = `return "${escape(minified)}";`
   output = output.replace('__SSID__', '" + config->wifi_ssid() + "');
@@ -27,18 +49,28 @@ fs.readFile("./original/index.html", "utf8", function(err, data) {
   output = output.replace('__READ_PERIOD__', '" + config->read_period() + "');
   output = output.replace('__ERRORS__', '" + errors + "');
 
-  fs.readFile("../../src/captive_portal/pages/index.h", "utf8", function(err, header) {
-    if(err) return console.log(err);
-
-    let result = header.replace(/return.*?$/m, output);
-
-    fs.writeFile("../../src/captive_portal/pages/index.h", result, function(err) {
-      if(err) return console.log(err);
-
-      console.log("The file was saved!");
-    }); 
-  });
+  replace_html_header_file('index.h', output)
+  .then(() => {
+    console.log("Done replacing index.h");
+  })
+  .catch((err) => {
+    console.log("Failed to replace index.h");
+    console.log(err);
+  })
 });
 
+fs.readFile("./original/success.html", "utf8", function(err, data) {
+  if(err) return console.log(err);
 
+  let minified = minify_html(data);
+  let output = `return "${escape(minified)}";`
 
+  replace_html_header_file('success.h', output)
+  .then(() => {
+    console.log("Done replacing success.h");
+  })
+  .catch((err) => {
+    console.log("Failed to replace success.h");
+    console.log(err);
+  })
+});

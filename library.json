@@ -11,7 +11,7 @@
     "type": "git",
     "url": "https://github.com/connected-digital-energy-meter/connected-digital-energy-meter.git"
   },
-  "version": "1.1.1",
+  "version": "1.2.0",
   "frameworks": "arduino",
   "platforms": ["espressif8266"],
   "dependencies": [

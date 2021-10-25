@@ -7,7 +7,7 @@
 #include "config/configuration.h"
 #include "mqtt/i_publisher.h"
 #include "smart_meter/smart_digital_meter.h"
-#include "hardware/pcb_v4.h"
+#include "hardware/pcb.h"
 #include "helpers/ip_parser.h"
 #include "captive_portal/captive_portal.h"
 #include "config/configuration_manager.h"

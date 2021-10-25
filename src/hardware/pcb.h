@@ -4,12 +4,12 @@
 #define SERIAL_DEBUG_BAUDRATE     115200
 
 #if defined(CDEM_PCB_V3)
-  #pragma message ( "Compiling for CDEM PCB v3" )
+  // #pragma message ( "Compiling for CDEM PCB v3" )
 
   // TODO
 
-#elif defined(CDEM_PCB_V4)
-  #pragma message ( "Compiling for CDEM PCB v4" )
+#elif defined(CDEM_PCB_V4) || defined (CDEM_PCB_V5)
+  // #pragma message ( "Compiling for CDEM PCB v4|v5" )
 
   // Serial for debugging
   #define SerialDebug               Serial

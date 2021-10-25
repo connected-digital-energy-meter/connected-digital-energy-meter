@@ -6,7 +6,7 @@ This library is part of the Connected Digital Energy Meter project. Check it out
 
 ## Configuration Page
 
-Access via [http://172.16.10.1](http://172.16.10.1) or scan the QR code below.
+Access via any url (you may need to choose one that is not in your DNS cache - not recently visited) or scan the QR code below.
 
 ![QR Code Configuration Page](./img/qr_configuration_page.png)
 

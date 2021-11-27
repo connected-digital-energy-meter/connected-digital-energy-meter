@@ -74,3 +74,19 @@ fs.readFile("./original/success.html", "utf8", function(err, data) {
     console.log(err);
   })
 });
+
+fs.readFile("./original/reset.html", "utf8", function(err, data) {
+  if(err) return console.log(err);
+
+  let minified = minify_html(data);
+  let output = `return "${escape(minified)}";`
+
+  replace_html_header_file('reset.h', output)
+  .then(() => {
+    console.log("Done replacing reset.h");
+  })
+  .catch((err) => {
+    console.log("Failed to replace reset.h");
+    console.log(err);
+  })
+});

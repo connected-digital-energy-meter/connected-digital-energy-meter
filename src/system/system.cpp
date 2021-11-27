@@ -36,17 +36,21 @@ namespace CDEM {
 
     delete portal;
 
-    // 3. Default = no boot; Altered = save to EEPROM
-    if (newConfiguration == Configuration()) {
-      DoLog.error("Not booting any further until device is properly configured.", "system");
-      deviceStatus->not_configured();
-      while(true) { delay(1000); }
-    } else if (newConfiguration != *(configManager->current_config())) {
+    // 3. Altered = save to EEPROM
+    // May as well be factory reset
+    if (newConfiguration != *(configManager->current_config())) {
       DoLog.verbose("Configuration has been altered via portal. Saving new config to EEPROM ...", "system");
       configManager->current_config(newConfiguration);
       if (configManager->save_configuration()) {
         DoLog.info("Successfully saved new configuration to EEPROM", "system");
       }   // What on fail ?
+    }
+
+    // 4. Default = no boot;
+    if (newConfiguration == Configuration()) {
+      DoLog.error("Not booting any further until device is properly configured.", "system");
+      deviceStatus->not_configured();
+      while(true) { delay(1000); }
     }
 
     return true;

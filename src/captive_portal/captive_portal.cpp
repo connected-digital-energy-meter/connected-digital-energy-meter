@@ -2,6 +2,7 @@
 #include <ESP8266WiFi.h>
 #include "pages/index.h"
 #include "pages/success.h"
+#include "pages/reset.h"
 #include "../logging/logger.h"
 #include "../config/configuration_validator.h"
 
@@ -126,6 +127,13 @@ namespace CDEM {
     webServer.on("/cancel", [=]() {
       DoLog.info("Getting cancel request", "portal");
       this->webServer.send(200, "text/html", SuccessPage::render());
+      done = true;
+    });
+
+    webServer.on("/reset", [=]() {
+      DoLog.info("Getting factory default request", "portal");
+      this->webServer.send(200, "text/html", ResetPage::render());
+      newConfig = Configuration();    // Reset to factory defaults
       done = true;
     });
 

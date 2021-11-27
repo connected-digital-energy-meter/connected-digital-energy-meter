@@ -150,6 +150,13 @@
     err();
   }
 
+  // Reset to factory default settings?
+  function f2() {
+    if (confirm('This will reset settings to their factory default!')) {
+      location.replace('/reset');
+    }
+  }
+
   // When loading page use value of hidden text field to set switch
   window.onload = load;
 </script>
@@ -193,7 +200,8 @@
       <label>Read Period (seconds):</label>
       <input type="number" name="period" required min="1" max="3600" value="__READ_PERIOD__"></input>
       <input type="submit" style="margin-top: 20px" value="Save">
-      <input type="button" style="margin-top: 20px" value="Clear" onclick="location.replace('/')">
+      <input type="button" style="margin-top: 20px" value="Reload" onclick="location.replace('/')">
+      <input type="button" style="margin-top: 20px" value="Factory Defaults" onclick="f2()">
       <input type="button" style="margin-top: 20px" value="Cancel" onclick="location.replace('/cancel')">
     </form>
   </div>

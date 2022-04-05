@@ -192,6 +192,16 @@ namespace CDEM {
     if (error == "") newConfig.mqtt_port(port.toInt());
     else validationErrors += error + "|";
 
+    String mqtt_username = this->webServer.arg("buser");
+    error = ConfigurationValidator::validate_broker_username(mqtt_username);
+    if (error == "") newConfig.mqtt_username(mqtt_username);
+    else validationErrors += error + "|";
+
+    String mqtt_password = this->webServer.arg("bpass");
+    error = ConfigurationValidator::validate_broker_password(mqtt_password);
+    if (error == "") newConfig.mqtt_password(mqtt_password);
+    else validationErrors += error + "|";
+
     String topic = this->webServer.arg("topic");
     error = ConfigurationValidator::validate_mqtt_topic(topic);
     if (error == "") newConfig.mqtt_topic(topic);

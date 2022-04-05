@@ -22,6 +22,12 @@ namespace CDEM {
 
       void mqtt_port(int port);
       int mqtt_port(void) const;
+
+      void mqtt_username(String username);
+      String mqtt_username(void) const;
+
+      void mqtt_password(String password);
+      String mqtt_password(void) const;
       
       void mqtt_topic(String topic);
       String mqtt_topic(void) const;

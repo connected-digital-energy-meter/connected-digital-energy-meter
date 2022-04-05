@@ -7,6 +7,8 @@ namespace CDEM {
 
   #define MQTT_DEFAULT_BROKER       "192.168.0.1"
   #define MQTT_DEFAULT_PORT         1883
+  #define MQTT_DEFAULT_USERNAME     ""
+  #define MQTT_DEFAULT_PASSWORD     ""
   #define MQTT_DEFAULT_TOPIC        "iot/myhome/cdem"
 
   #define NETWORK_USE_DHCP          true

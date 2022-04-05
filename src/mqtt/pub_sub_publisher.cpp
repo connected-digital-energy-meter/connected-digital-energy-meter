@@ -11,9 +11,11 @@ namespace CDEM {
     destroy_client();
   }
 
-  void PubSubPublisher::connect(String broker, unsigned int port) {
+  void PubSubPublisher::connect(String broker, unsigned int port, String username, String password) {
     this->broker = broker;
     this->port = port;
+    this->username = username;
+    this->password = password;
     connect();
   }
 
@@ -78,7 +80,10 @@ namespace CDEM {
     destroy_client();
     build_client();
 
-    if (!client->connect(clientId.c_str(), NULL, NULL, NULL, 0, false, NULL, true)) {
+    auto mqtt_username = username.length() == 0 ? username.c_str() : NULL;
+    auto mqtt_password = password.length() == 0 ? password.c_str() : NULL;
+
+    if (!client->connect(clientId.c_str(),mqtt_username, mqtt_password, NULL, 0, false, NULL, true)) {
       DoLog.error("Failed to connect to MQTT broker", "pubsub");
       return;
     }

@@ -45,6 +45,8 @@ fs.readFile("./original/index.html", "utf8", function(err, data) {
   output = output.replace('__GATEWAY__', '" + config->default_gateway() + "');
   output = output.replace('__BROKER_IP__', '" + config->mqtt_broker() + "');
   output = output.replace('__BROKER_PORT__', '" + config->mqtt_port() + "');
+  output = output.replace('__BROKER_USERNAME__', '" + config->mqtt_username() + "');
+  output = output.replace('__BROKER_PASSWORD__', '" + config->mqtt_password() + "');
   output = output.replace('__TOPIC__', '" + config->mqtt_topic() + "');
   output = output.replace('__READ_PERIOD__', '" + config->read_period() + "');
   output = output.replace('__ERRORS__', '" + errors + "');

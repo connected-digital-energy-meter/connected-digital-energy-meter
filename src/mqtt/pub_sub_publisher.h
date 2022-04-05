@@ -14,7 +14,7 @@ namespace CDEM {
       ~PubSubPublisher(void);
 
     public:
-      virtual void connect(String broker, unsigned int port);
+      virtual void connect(String broker, unsigned int port, String username = "", String password = "");
       virtual void disconnect(void);
       virtual bool is_connected(void);
 
@@ -32,6 +32,8 @@ namespace CDEM {
     private:
       String broker = "";
       int port = 1883;
+      String username = "";
+      String password = "";
       WiFiClient &wifiClient;
       PubSubClient * client = nullptr;
       String clientId;

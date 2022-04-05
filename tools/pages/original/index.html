@@ -195,6 +195,10 @@
       <input type="text" name="bip" required value="__BROKER_IP__" minlength="7" maxlength="15" size="15" pattern="^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$">
       <label>MQTT Broker Port:</label>
       <input type="number" name="port" required min="1" max="65535" value="__BROKER_PORT__"></input>
+      <label>MQTT Broker Username:</label>
+      <input type="text" name="buser" value="__BROKER_USERNAME__" maxlength="100">
+      <label>MQTT Broker Password:</label>
+      <input type="text" name="bpass" value="__BROKER_PASSWORD__" maxlength="100">
       <label>MQTT Base Topic:</label>
       <input type="text" name="topic" required value="__TOPIC__"></input>
       <label>Read Period (seconds):</label>

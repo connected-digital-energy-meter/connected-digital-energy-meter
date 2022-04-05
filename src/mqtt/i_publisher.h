@@ -7,7 +7,7 @@ namespace CDEM {
   class IPublisher {
 
     public:
-      virtual void connect(String broker, unsigned int port) = 0;
+      virtual void connect(String broker, unsigned int port, String username, String password) = 0;
       virtual void disconnect(void) = 0;
       virtual bool is_connected(void) = 0;
 

@@ -8,6 +8,8 @@ namespace CDEM {
     wifi_password(WIFI_DEFAULT_PASSWORD);
     mqtt_broker(MQTT_DEFAULT_BROKER);
     mqtt_port(MQTT_DEFAULT_PORT);
+    mqtt_username(MQTT_DEFAULT_USERNAME);
+    mqtt_password(MQTT_DEFAULT_PASSWORD);
     mqtt_topic(MQTT_DEFAULT_TOPIC);
     use_dhcp(NETWORK_USE_DHCP);
     static_ip(NETWORK_DEFAULT_IP);
@@ -46,6 +48,22 @@ namespace CDEM {
 
   int Configuration::mqtt_port(void) const {
     return *(int*)datamap.get("mqtt_port");
+  }
+
+  void Configuration::mqtt_username(String username) {
+    datamap.add("mqtt_username", (void*)(username.c_str()), username.length()+1);
+  }
+
+  String Configuration::mqtt_username(void) const {
+    return String((char*)datamap.get("mqtt_username"));
+  }
+
+  void Configuration::mqtt_password(String password) {
+    datamap.add("mqtt_password", (void*)(password.c_str()), password.length()+1);
+  }
+
+  String Configuration::mqtt_password(void) const {
+    return String((char*)datamap.get("mqtt_password"));
   }
   
   void Configuration::mqtt_topic(String topic) {
@@ -107,6 +125,8 @@ namespace CDEM {
     output += "Default Gateway: " + default_gateway() + "\n";
     output += "MQTT Broker:     " + mqtt_broker() + "\n";
     output += "MQTT Port:       " + String(mqtt_port()) + "\n";
+    output += "MQTT Username:   " + mqtt_username() + "\n";
+    output += "MQTT Password:   " + mqtt_password() + "\n";
     output += "MQTT Topic:      " + mqtt_topic() + "\n";
     output += "Read period:     " + String(read_period()) + " seconds";
     return output;
@@ -118,6 +138,8 @@ namespace CDEM {
       wifi_password() == rhs.wifi_password() &&
       mqtt_broker() == rhs.mqtt_broker() &&
       mqtt_port() == rhs.mqtt_port() &&
+      mqtt_username() == rhs.mqtt_username() &&
+      mqtt_password() == rhs.mqtt_password() &&
       mqtt_topic() == rhs.mqtt_topic() &&
       use_dhcp() == rhs.use_dhcp() &&
       static_ip() == rhs.static_ip() &&

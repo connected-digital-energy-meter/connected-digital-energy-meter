@@ -54,6 +54,18 @@ namespace CDEM {
     return validator.validation_error();
   }
 
+  String ConfigurationValidator::validate_broker_username(String username) {
+    StringValidator validator(true, 100);
+    validator.is_valid(username, "Broker Username");
+    return validator.validation_error();
+  }
+
+  String ConfigurationValidator::validate_broker_password(String password) {
+    StringValidator validator(true, 100);
+    validator.is_valid(password, "Broker Password");
+    return validator.validation_error();
+  }
+
   String ConfigurationValidator::validate_mqtt_topic(String topic) {
     MqttTopicValidator validator;
     validator.is_valid(topic, "MQTT Topic");

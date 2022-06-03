@@ -80,8 +80,8 @@ namespace CDEM {
     destroy_client();
     build_client();
 
-    auto mqtt_username = username.length() == 0 ? username.c_str() : NULL;
-    auto mqtt_password = password.length() == 0 ? password.c_str() : NULL;
+    auto mqtt_username = (username == NULL || username == "") ? NULL : username.c_str();
+    auto mqtt_password = (password == NULL || password == "") ? NULL : password.c_str();
 
     if (!client->connect(clientId.c_str(),mqtt_username, mqtt_password, NULL, 0, false, NULL, true)) {
       DoLog.error("Failed to connect to MQTT broker", "pubsub");

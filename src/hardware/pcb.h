@@ -28,7 +28,7 @@
     // Default = 20.5
 
   // Configuration
-  #define EEPROM_CONFIG_ID                  0x0001
+  #define EEPROM_CONFIG_ID                  0x0002
   #define EEPROM_CONFIG_SIZE                1024
 
 #endif

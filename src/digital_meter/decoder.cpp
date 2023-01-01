@@ -78,7 +78,10 @@ namespace CDEM {
       { "1-0:61.7.0", "l3_power_consumption", 0.0, true, 1 },
       { "0-0:96.14.0", "actual_tarif", 0.0, false, 1 },
       { "0-1:24.2.3", "gas_meter_m3", 0.0, true, 2 },
-      { "0-2:24.2.1", "water_meter_m3", 0.0, true, 2 }
+      { "0-2:24.2.1", "water_meter_m3", 0.0, true, 2 },
+      { "1-0:1.4.0", "current_average_demand", 0.0, true, 1},
+      { "1-0:1.6.0", "maximum_demand_current_month", 0.0, true, 2}
+      // { "0-0:98.1.0", "maximum_demand_last_year", 0.0, true, 2}  // TODO: is complexer, returns array of data
     };
 
     for (size_t i = 0; i < sizeof(listing)/sizeof(UtilityKeyValue); i++) {

@@ -116,19 +116,19 @@ namespace CDEM {
   }
 
   String Configuration::to_string(void) const {
-    String output = "";
-    output += "WiFi SSID:       " + wifi_ssid() + "\n";
-    output += "WiFi Password:   " + wifi_password() + "\n";
-    output += "Use DHCP?:       " + String(use_dhcp() ? "yes" : "no") + "\n";
-    output += "Static IP:       " + static_ip() + "\n";
-    output += "Subnet Mask:     " + subnet_mask() + "\n";
-    output += "Default Gateway: " + default_gateway() + "\n";
-    output += "MQTT Broker:     " + mqtt_broker() + "\n";
-    output += "MQTT Port:       " + String(mqtt_port()) + "\n";
-    output += "MQTT Username:   " + mqtt_username() + "\n";
-    output += "MQTT Password:   " + mqtt_password() + "\n";
-    output += "MQTT Topic:      " + mqtt_topic() + "\n";
-    output += "Read period:     " + String(read_period()) + " seconds";
+    String output = "\r";
+    output += "WiFi SSID:       " + wifi_ssid() + "\r\n";
+    output += "WiFi Password:   " + wifi_password() + "\r\n";
+    output += "Use DHCP?:       " + String(use_dhcp() ? "yes" : "no") + "\r\n";
+    output += "Static IP:       " + static_ip() + "\r\n";
+    output += "Subnet Mask:     " + subnet_mask() + "\r\n";
+    output += "Default Gateway: " + default_gateway() + "\r\n";
+    output += "MQTT Broker:     " + mqtt_broker() + "\r\n";
+    output += "MQTT Port:       " + String(mqtt_port()) + "\r\n";
+    output += "MQTT Username:   " + mqtt_username() + "\r\n";
+    output += "MQTT Password:   " + mqtt_password() + "\r\n";
+    output += "MQTT Topic:      " + mqtt_topic() + "\r\n";
+    output += "Read period:     " + String(read_period()) + " seconds \r\n";
     return output;
   }
 

@@ -37,7 +37,7 @@ namespace CDEM {
       };
 
     private:
-      char datagramBuffer[1024] = {0};
+      char datagramBuffer[2048] = {0};
       Datagram datagram;
       DigitalMeter meter;
       IPublisher * publisher = nullptr;

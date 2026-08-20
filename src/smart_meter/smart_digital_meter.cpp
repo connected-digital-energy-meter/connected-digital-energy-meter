@@ -103,7 +103,7 @@ namespace CDEM {
     for (String key : keys) {
       scheduleOk = scheduleOk && publish(
         key,
-        String(datagram.get(key))
+        String(datagram.get(key), 3)
       );
     }
 
